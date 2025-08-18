@@ -10,22 +10,22 @@
       },
       "2": {
         "id": "2",
-        "content": "Modern ve güzel arayüz tasarımını araştır",
-        "details": "1. WhatsApp benzeri modern UI tasarım trendlerini araştır. 2. Mesajlaşma uygulamaları için best practice'leri incele. 3. Renk şemaları ve tipografi önerilerini topla.",
+        "content": "Modern micro SaaS UI/UX tasarımını araştır",
+        "details": "1. WhatsApp benzeri modern UI tasarım trendlerini araştır. 2. Micro SaaS dashboard best practice'lerini incele. 3. Admin panel tasarım örneklerini topla. 4. Landing page tasarım trendlerini araştır. 5. Medya dosya upload UI/UX örneklerini incele.",
         "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "React tabanlı modern frontend uygulaması geliştir",
-        "details": "1. Modern React UI kütüphaneleri ile arayüz tasarla. 2. Responsive design uygula. 3. WhatsApp temalı renk şeması kullan. 4. Kullanıcı dostu form validasyonları ekle. 5. Excel dosya upload için drag&drop özelliği ekle.",
+        "content": "Gelişmiş React frontend micro SaaS uygulaması geliştir",
+        "details": "1. Landing page (özellikler, görseller, fiyatlandırma). 2. Kullanıcı kayıt/giriş sistemi. 3. Ana dashboard. 4. Admin dashboard. 5. Değişken yönetim sistemi (sayın, değerli, kıymetli, sevgili, tarih, custom). 6. Medya upload sistemi (ses, resim, video, belge). 7. WhatsApp kişi yönetimi. 8. Mesaj şablon editörü. 9. İstatistik ve raporlama. 10. Responsive tasarım.",
         "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Backend API'yi oluştur ve entegre et",
-        "details": "1. Python backend API'yi modernize et. 2. Supabase ile veritabanı entegrasyonu ekle. 3. Mesaj gönderme servislerini API endpoint'leri haline getir. 4. Excel dosya upload ve işleme işlevlerini API'ye taşı.",
+        "content": "Kapsamlı backend API ve Supabase entegrasyonu",
+        "details": "1. Kullanıcı authentication sistemi. 2. Rol tabanlı yetkilendirme (admin, user). 3. WhatsApp Web entegrasyonu. 4. WhatsApp Business API entegrasyonu. 5. Kişi listesi senkronizasyonu. 6. Medya dosya upload ve storage. 7. Değişken sistemi API'leri. 8. Mesaj şablon yönetimi. 9. Toplu gönderim sistemi. 10. İstatistik ve analitik API'leri. 11. Cron job'lar için background işlemler.",
         "status": "pending",
         "priority": "high"
       },
