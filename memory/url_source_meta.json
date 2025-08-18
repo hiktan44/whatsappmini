@@ -1,0 +1,258 @@
+{
+  "_source_id": 35,
+  "sources": {
+    "Modern Admin Panel Tasarım Araştırması": {
+      "https://medium.com/@CarlosSmith24/admin-dashboard-ui-ux-best-practices-for-2025-8bdc6090c57d": {
+        "id": 1,
+        "publisher": "Medium - Carlos Smith",
+        "url": "https://medium.com/@CarlosSmith24/admin-dashboard-ui-ux-best-practices-for-2025-8bdc6090c57d",
+        "title": "Admin Dashboard UI/UX: Best Practices for 2025",
+        "info": "2025 yılı için admin dashboard tasarımında 10 temel trend ve best practice: AI destekli içgörüler, minimalizm, gelişmiş veri görselleştirme, kişiselleştirme, mobil uyumluluk, akıcı navigasyon, güvenlik özellikleri, gerçek zamanlı işbirliği, mikro etkileşimler ve erişilebilirlik"
+      },
+      "https://www.justinmind.com/ui-design/dashboard-design-best-practices-ux": {
+        "id": 2,
+        "publisher": "Justinmind",
+        "url": "https://www.justinmind.com/ui-design/dashboard-design-best-practices-ux",
+        "title": "Dashboard Design: Best Practices and Examples",
+        "info": "Dashboard tasarımında temel UX prensipleri, bilgi mimarisi, kart UI tasarımı, veri görselleştirme teknikleri, 5 farklı dashboard türü analizi ve 35+ gerçek dashboard örneği"
+      },
+      "https://www.pencilandpaper.io/articles/ux-pattern-analysis-data-dashboards": {
+        "id": 3,
+        "publisher": "Pencil & Paper",
+        "url": "https://www.pencilandpaper.io/articles/ux-pattern-analysis-data-dashboards",
+        "title": "Dashboard Design UX Patterns Best Practices",
+        "info": "Veri dashboard'ları için UX pattern analizi: pano türleri (raporlama, izleme, keşif), UX anatomisi, yerleşim desenleri, grafik UX pattern'leri, etkileşimli öğeler ve yaygın UX sorunları"
+      },
+      "https://www.aufaitux.com/blog/dashboard-design-principles/": {
+        "id": 4,
+        "publisher": "AufaitUX",
+        "url": "https://www.aufaitux.com/blog/dashboard-design-principles/",
+        "title": "30 Proven Dashboard Design Principles for Better Data Display",
+        "info": "Dashboard tasarımı için 30 kanıtlanmış prensip: kullanıcı analizi, basitlik, doğru görselleştirme tekniği seçimi, 5 saniye kuralı, bilgi hiyerarşisi, kart UI, renk kullanımı, erişilebilirlik, performans optimizasyonu ve gelişmiş özellikler"
+      },
+      "https://medium.com/@nocobase/how-to-design-an-rbac-role-based-access-control-system-3b57ca9c6826": {
+        "id": 5,
+        "publisher": "Medium - NocoBase",
+        "url": "https://medium.com/@nocobase/how-to-design-an-rbac-role-based-access-control-system-3b57ca9c6826",
+        "title": "How to Design an RBAC (Role-Based Access Control) System",
+        "info": "RBAC sistem tasarımı: temel kavramlar (kullanıcı, rol, izin, kaynak), tasarım modelleri, alan düzeyi izinler, NocoBase ile gerçek uygulama örnekleri ve iyi tasarlanmış izin sisteminin özellikleri"
+      }
+    },
+    "WhatsApp Benzeri Modern UI Tasarım Trendleri": {
+      "https://design.facebook.com/blog/whatsapp-user-interface-update/": {
+        "id": 6,
+        "publisher": "Meta Design",
+        "url": "https://design.facebook.com/blog/whatsapp-user-interface-update/",
+        "title": "WhatsApp User Interface Update - Design at Meta",
+        "info": "WhatsApp'ın resmi UI güncellemesi, yeni renk paleti, ikon güncellemeleri, navigation iyileştirmeleri ve tasarım felsefesi açıklamaları"
+      },
+      "https://octet.design/journal/best-chat-ui-design/": {
+        "id": 7,
+        "publisher": "Octet Design",
+        "url": "https://octet.design/journal/best-chat-ui-design/",
+        "title": "Best Chat UI Design to Watch In 2025",
+        "info": "2025 chat UI tasarım trendleri, AR entegrasyonu, kişiselleştirme ve güvenlik önlemleri dahil olmak üzere 11 başarılı tasarım örneği"
+      },
+      "https://www.uxstudioteam.com/ux-blog/ui-trends-2019": {
+        "id": 8,
+        "publisher": "UX Studio",
+        "url": "https://www.uxstudioteam.com/ux-blog/ui-trends-2019",
+        "title": "UI Trends 2025: Top 10 Trends Your Users Will Love",
+        "info": "2025 UI trendleri: 3D etkileşimli objeler, AI arayüzleri, metin-emoji karışımı, glassmorphism, uzaysal tasarım ve sıfır UI dahil 10 temel trend"
+      },
+      "https://designshack.net/articles/trends/icon-design/": {
+        "id": 9,
+        "publisher": "Design Shack",
+        "url": "https://designshack.net/articles/trends/icon-design/",
+        "title": "Icon Design in 2025: The Key Trends",
+        "info": "2025 ikon tasarım trendleri: Y2K ikonları, glassmorphism, 3D ikonlar, kalın çizgiler, emoji-style ve 25+ farklı ikon stili"
+      },
+      "https://www.pixelmatters.com/blog/8-ui-design-trends-2025": {
+        "id": 10,
+        "publisher": "Pixelmatters",
+        "url": "https://www.pixelmatters.com/blog/8-ui-design-trends-2025",
+        "title": "8 UI Design Trends We're Seeing in 2025",
+        "info": "2025 UI trendleri: Post-neumorphism, dark mode optimizasyonu, metin odaklı arayüzler, işlevsel AI ve sürdürülebilir UX"
+      },
+      "https://www.designrush.com/best-designs/apps/trends/app-colors": {
+        "id": 11,
+        "publisher": "DesignRush",
+        "url": "https://www.designrush.com/best-designs/apps/trends/app-colors",
+        "title": "Choosing App Colors: Best Color Schemes for 2025",
+        "info": "2025 mobil app renk trendleri: parlak paletler, duoton renkler, cesur kombinasyonlar, toprak tonları ve gradyanlar"
+      },
+      "https://www.brandvm.com/post/mobile-first-design-principles-2025": {
+        "id": 12,
+        "publisher": "BrandVM",
+        "url": "https://www.brandvm.com/post/mobile-first-design-principles-2025",
+        "title": "Mobile-First Design Principles in 2025",
+        "info": "2025 mobile-first tasarım prensipleri: duyarlı düzenler, performans optimizasyonu, dokunmatik dostu arayüzler ve PWA faydaları"
+      }
+    },
+    "Medya Upload UI/UX Araştırması": {
+      "https://blog.filestack.com/building-modern-drag-and-drop-upload-ui/": {
+        "id": 13,
+        "publisher": "Filestack Blog",
+        "url": "https://blog.filestack.com/building-modern-drag-and-drop-upload-ui/",
+        "title": "Building a Modern Drag and Drop Upload UI in 2024",
+        "info": "Modern sürükle ve bırak upload UI tasarımının temel prensipleri, HTML5, JavaScript, React entegrasyonu, dosya doğrulama, ilerleme göstergeleri ve erişilebilirlik özellikleri"
+      },
+      "https://uploadcare.com/blog/file-uploader-ux-best-practices/": {
+        "id": 14,
+        "publisher": "Uploadcare Blog",
+        "url": "https://uploadcare.com/blog/file-uploader-ux-best-practices/",
+        "title": "UX Best Practices for Designing an Intuitive File Uploader",
+        "info": "Dosya yükleyiciler için kapsamlı UX best practice'leri: sürükle-bırak, multi-file support, doğrulama, progress indicator, preview, hata yönetimi ve erişilebilirlik"
+      },
+      "https://www.patternfly.org/components/file-upload/multiple-file-upload/design-guidelines": {
+        "id": 15,
+        "publisher": "PatternFly Design System",
+        "url": "https://www.patternfly.org/components/file-upload/multiple-file-upload/design-guidelines",
+        "title": "Multiple File Upload Design Guidelines",
+        "info": "Çoklu dosya yükleme bileşenlerinin tasarım yönergeleri, bileşen elemanları, kullanım durumları, en iyi uygulamalar ve davranış kalıpları"
+      },
+      "https://uploadcare.com/blog/file-uploader-accessibility/": {
+        "id": 16,
+        "publisher": "Uploadcare Blog",
+        "url": "https://uploadcare.com/blog/file-uploader-accessibility/",
+        "title": "Building an Accessible File Uploader",
+        "info": "Dosya yükleyici erişilebilirliği için WCAG uyumluluğu, klavye navigasyonu, ekran okuyucu desteği, ARIA attributes, renk kontrast oranları ve mobil erişilebilirlik"
+      },
+      "https://www.eleken.co/blog-posts/drag-and-drop-ui": {
+        "id": 17,
+        "publisher": "Eleken",
+        "url": "https://www.eleken.co/blog-posts/drag-and-drop-ui",
+        "title": "Drag and Drop UI Examples and UX Tips from SaaS Products",
+        "info": "Slack'in dosya yükleme sürecinde sürükle-bırak arayüzünü nasıl temiz, hızlı ve kullanıcı dostu hale getirdiği, şeffaf katman ve önizleme özellikleri"
+      }
+    },
+    "Micro SaaS Dashboard Best Practices": {
+      "https://codetheorem.co/blogs/saas-dashboard-ux": {
+        "id": 18,
+        "publisher": "Code Theorem",
+        "url": "https://codetheorem.co/blogs/saas-dashboard-ux",
+        "title": "SaaS Dashboard Design: UX Best Practices and Trends",
+        "info": "SaaS dashboard UX best practices including user-centered design, simplicity, visualization, information hierarchy, responsive design, intuitive navigation, consistency, personalization, real-time updates, and performance optimization"
+      },
+      "https://www.pencilandpaper.io/articles/ux-pattern-analysis-data-dashboards": {
+        "id": 19,
+        "publisher": "Pencil and Paper",
+        "url": "https://www.pencilandpaper.io/articles/ux-pattern-analysis-data-dashboards",
+        "title": "Dashboard Design UX Patterns Best Practices",
+        "info": "Comprehensive guide on data dashboard UX patterns including F and Z layout patterns, card layout consistency, color accessibility, responsive design, chart UX patterns, interactive elements, and common UX problems with solutions"
+      },
+      "https://uxcam.com/blog/saas-metrics-dashboard/": {
+        "id": 20,
+        "publisher": "UXCam",
+        "url": "https://uxcam.com/blog/saas-metrics-dashboard/",
+        "title": "SaaS Metrics Dashboard Examples and When to Use Them",
+        "info": "SaaS metrics dashboard definition, key metrics categories (revenue, customer, usage/engagement, performance/conversion), dashboard configuration by teams, and specific dashboard examples for conversion funnel, retention/churn, feature adoption"
+      },
+      "https://www.growslash.com/blog/visualization/saas-dashboards-visualizations-unlocking-the-power-of-data": {
+        "id": 21,
+        "publisher": "GrowSlash",
+        "url": "https://www.growslash.com/blog/visualization/saas-dashboards-visualizations-unlocking-the-power-of-data",
+        "title": "SaaS Dashboards & Visualizations: Unlocking the Power of Data",
+        "info": "SaaS dashboard data visualization types (bar charts, line graphs), design principles for simple layouts and device compatibility, interaction features, AI technology integration, and statistical insights about SaaS market trends"
+      },
+      "https://slack.com/blog/productivity/a-redesigned-slack-built-for-focus": {
+        "id": 22,
+        "publisher": "Slack",
+        "url": "https://slack.com/blog/productivity/a-redesigned-slack-built-for-focus",
+        "title": "A redesigned Slack, built for focus",
+        "info": "Slack's redesign principles focusing on easy navigation, reducing distractions, quick access to essential tools, unified 'Home' view, focused views (Activity, Direct Messages, Later, More), new create button, and improved search experience"
+      },
+      "https://medium.com/@drizzleshine/mastering-responsive-design-for-a-saas-dashboard-a-design-challenge-c8401df0eb13": {
+        "id": 23,
+        "publisher": "Medium",
+        "url": "https://medium.com/@drizzleshine/mastering-responsive-design-for-a-saas-dashboard-a-design-challenge-c8401df0eb13",
+        "title": "Mastering Responsive Design for a SaaS Dashboard",
+        "info": "Mobile dashboard design challenges and solutions including removing unnecessary graphics, hiding secondary information, implementing horizontal scrolling for cards, responsive table solutions, and iterative design approach"
+      },
+      "https://merge.rocks/blog/saas-navigation-ux-best-practices-for-your-saas-ux": {
+        "id": 24,
+        "publisher": "Merge Rocks",
+        "url": "https://merge.rocks/blog/saas-navigation-ux-best-practices-for-your-saas-ux",
+        "title": "SaaS navigation UX: Best practices for your SaaS UX",
+        "info": "SaaS navigation UX best practices including identifying user needs, making content easily findable, ensuring simple and consistent UI across pages, navigation ideas (tabs, dropdowns, popovers, hamburger menus, breadcrumbs), and common design mistakes to avoid"
+      },
+      "https://www.eleken.co/blog-posts/application-interface-design-examples-how-top-companies-design-their-apps-uis": {
+        "id": 25,
+        "publisher": "Eleken",
+        "url": "https://www.eleken.co/blog-posts/application-interface-design-examples-how-top-companies-design-their-apps-uis",
+        "title": "25 SaaS Application Interface Design Examples",
+        "info": "Comprehensive analysis of 25 successful SaaS companies' interface designs including Intercom's menu organization, Toggl's onboarding flow, Headspace's accessibility, Figma's landing page, Typeform's template gallery, Asana's success celebration, Buffer's upgrade prompts, and more design patterns"
+      },
+      "https://zapier.com/blog/zapier-interfaces-guide/": {
+        "id": 26,
+        "publisher": "Zapier",
+        "url": "https://zapier.com/blog/zapier-interfaces-guide/",
+        "title": "Zapier Interfaces: No-code app builder powered by automation",
+        "info": "Zapier Interfaces features including no-code app building, automation integration, centralized management, customizable components, data views and security, triggers and actions, branding options, access control, navigation management, and AI chatbot integration"
+      },
+      "https://www.aubergine.co/insights/ux-re-design-experiments-elevating-calendlys-one-on-one-event-type-feature": {
+        "id": 27,
+        "publisher": "Aubergine",
+        "url": "https://www.aubergine.co/insights/ux-re-design-experiments-elevating-calendlys-one-on-one-event-type-feature",
+        "title": "Calendly Redesign Case Study - Elevating User Experience",
+        "info": "Calendly's UX redesign focused on simplifying event creation process (from 7 to 4 steps), improving content distribution with wizard pattern, adding step visibility with stepper component, enhanced branding flexibility with global templates, and integrated availability setting with visual calendar view"
+      },
+      "https://userpilot.com/blog/conversion-rate-optimization-best-practices/": {
+        "id": 28,
+        "publisher": "Userpilot",
+        "url": "https://userpilot.com/blog/conversion-rate-optimization-best-practices/",
+        "title": "12 SaaS Conversion Rate Optimization Best Practices",
+        "info": "12 SaaS conversion rate optimization best practices including free trial conversion optimization, landing page optimization, pricing page optimization, and analytics tools for CRO implementation"
+      },
+      "https://userpilot.com/blog/saas-dashboard-examples/": {
+        "id": 29,
+        "publisher": "Userpilot",
+        "url": "https://userpilot.com/blog/saas-dashboard-examples/",
+        "title": "8 SaaS Dashboard Examples to Track Key Metrics",
+        "info": "8 SaaS dashboard examples covering different metrics types including general SaaS metrics, customer acquisition cost (CAC), new user activation, core feature engagement, trial-to-paid conversion, MRR, expansion revenue, and user retention dashboards"
+      },
+      "https://www.bootstrapdash.com/blog/saas-dashboard-templates": {
+        "id": 30,
+        "publisher": "BootstrapDash",
+        "url": "https://www.bootstrapdash.com/blog/saas-dashboard-templates",
+        "title": "10 Future-Ready SaaS Dashboard Templates for 2025",
+        "info": "10 future-ready SaaS dashboard templates for 2025 featuring modern technology stack (React, Angular, Vue, Bootstrap), customization options, responsive design, security features, scalability, and performance optimization"
+      },
+      "https://fuselabcreative.com/top-dashboard-design-trends-2025/": {
+        "id": 31,
+        "publisher": "Fuselab Creative",
+        "url": "https://fuselabcreative.com/top-dashboard-design-trends-2025/",
+        "title": "Top Dashboard Design Trends for 2025",
+        "info": "2025 dashboard design trends including AI-powered personalization, enhanced UX focus, data storytelling, mobile-first approach, chatbot-first approach, micro interactivity with data, and zero-interface style approach for efficiency improvements"
+      },
+      "https://uxdesign.cc/design-thoughtful-dashboards-for-b2b-saas-ff484385960d": {
+        "id": 32,
+        "publisher": "UX Design",
+        "url": "https://uxdesign.cc/design-thoughtful-dashboards-for-b2b-saas-ff484385960d",
+        "title": "6 steps to design thoughtful dashboards for B2B SaaS products",
+        "info": "6-step methodology for designing thoughtful B2B SaaS dashboards including defining user and business goals, determining key decisions and KPIs, choosing dashboard types and visualizations, mapping layout and flow, stakeholder involvement, and user validation approaches"
+      },
+      "https://www.airtable.com/guides/collaborate/interface-designer-dashboards": {
+        "id": 33,
+        "publisher": "Airtable",
+        "url": "https://www.airtable.com/guides/collaborate/interface-designer-dashboards",
+        "title": "Airtable Interface Designer: How to Setup a Dashboard",
+        "info": "Airtable dashboard interface layout design including number elements, charts, timeline views, grid views, and design recommendations for creating effective dashboards"
+      },
+      "https://blog.airtable.com/interface-designer-best-practices/": {
+        "id": 34,
+        "publisher": "Airtable",
+        "url": "https://blog.airtable.com/interface-designer-best-practices/",
+        "title": "Airtable Interface Designer Best Practices",
+        "info": "Airtable Interface Designer best practices including pre-interface planning questions, selecting appropriate layout types (record review, record summary, dashboard, blank), and using elements to create visual hierarchy"
+      },
+      "https://upstackstudio.com/blog/micro-saas-success-stories/": {
+        "id": 35,
+        "publisher": "Upstack Studio",
+        "url": "https://upstackstudio.com/blog/micro-saas-success-stories/",
+        "title": "6 Micro SaaS Success Stories Straight Outta Reddit!",
+        "info": "6 successful Micro SaaS stories from Reddit covering Famewall, Clickpilot, GrowthPanels, Sketch Logo AI, Repurposepie, and Unicorn Platform with their MRR growth strategies and business models"
+      }
+    }
+  }
+}

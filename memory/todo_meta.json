@@ -12,14 +12,14 @@
         "id": "2",
         "content": "Modern micro SaaS UI/UX tasarımını araştır",
         "details": "1. WhatsApp benzeri modern UI tasarım trendlerini araştır. 2. Micro SaaS dashboard best practice'lerini incele. 3. Admin panel tasarım örneklerini topla. 4. Landing page tasarım trendlerini araştır. 5. Medya dosya upload UI/UX örneklerini incele.",
-        "status": "pending",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "Gelişmiş React frontend micro SaaS uygulaması geliştir",
         "details": "1. Landing page (özellikler, görseller, fiyatlandırma). 2. Kullanıcı kayıt/giriş sistemi. 3. Ana dashboard. 4. Admin dashboard. 5. Değişken yönetim sistemi (sayın, değerli, kıymetli, sevgili, tarih, custom). 6. Medya upload sistemi (ses, resim, video, belge). 7. WhatsApp kişi yönetimi. 8. Mesaj şablon editörü. 9. İstatistik ve raporlama. 10. Responsive tasarım.",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "4": {
