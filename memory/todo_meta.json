@@ -1,0 +1,41 @@
+{
+  "todos": {
+    "Coordinator": {
+      "1": {
+        "id": "1",
+        "content": "Mevcut PyWhatApp kodunu analiz et ve gereksinimlerini belirle",
+        "details": "1. Mevcut Streamlit kodunu incele. 2. Özellikler ve fonksiyonları listele. 3. UI/UX iyileştirme noktalarını tespit et.",
+        "status": "completed",
+        "priority": "high"
+      },
+      "2": {
+        "id": "2",
+        "content": "Modern ve güzel arayüz tasarımını araştır",
+        "details": "1. WhatsApp benzeri modern UI tasarım trendlerini araştır. 2. Mesajlaşma uygulamaları için best practice'leri incele. 3. Renk şemaları ve tipografi önerilerini topla.",
+        "status": "pending",
+        "priority": "high"
+      },
+      "3": {
+        "id": "3",
+        "content": "React tabanlı modern frontend uygulaması geliştir",
+        "details": "1. Modern React UI kütüphaneleri ile arayüz tasarla. 2. Responsive design uygula. 3. WhatsApp temalı renk şeması kullan. 4. Kullanıcı dostu form validasyonları ekle. 5. Excel dosya upload için drag&drop özelliği ekle.",
+        "status": "pending",
+        "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Backend API'yi oluştur ve entegre et",
+        "details": "1. Python backend API'yi modernize et. 2. Supabase ile veritabanı entegrasyonu ekle. 3. Mesaj gönderme servislerini API endpoint'leri haline getir. 4. Excel dosya upload ve işleme işlevlerini API'ye taşı.",
+        "status": "pending",
+        "priority": "high"
+      },
+      "5": {
+        "id": "5",
+        "content": "Uygulamayı test et ve deploy et",
+        "details": "1. Tüm fonksiyonları test et. 2. UI/UX testleri yap. 3. Uygulamayı kullanıcı dostu hale getir. 4. Production'a deploy et.",
+        "status": "pending",
+        "priority": "medium"
+      }
+    }
+  }
+}
