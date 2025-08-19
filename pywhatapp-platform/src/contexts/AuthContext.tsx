@@ -27,7 +27,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Admin session kontrolü
+  const checkAdminSession = () => {
+    const adminSession = localStorage.getItem('admin_session')
+    if (adminSession) {
+      try {
+        const parsed = JSON.parse(adminSession)
+        setUser(parsed.user as any)
+        setSession({ access_token: parsed.token } as any)
+        return true
+      } catch (error) {
+        localStorage.removeItem('admin_session')
+      }
+    }
+    return false
+  }
+
   useEffect(() => {
+    // İlk önce admin session kontrol et
+    if (checkAdminSession()) {
+      setLoading(false)
+      return
+    }
+
     // Get initial session
     const getInitialSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession()
@@ -51,7 +73,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     )
 
-    return () => subscription.unsubscribe()
+    // Admin login event listener
+    const handleAdminLogin = (event: any) => {
+      const adminSession = event.detail
+      setUser(adminSession.user)
+      setSession({ access_token: adminSession.token } as any)
+    }
+
+    window.addEventListener('admin-login', handleAdminLogin)
+
+    return () => {
+      subscription.unsubscribe()
+      window.removeEventListener('admin-login', handleAdminLogin)
+    }
   }, [])
 
   const signUp = async (email: string, password: string) => {
@@ -71,8 +105,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   const signOut = async () => {
+    // Admin session'ı temizle
+    localStorage.removeItem('admin_session')
+    
+    // Normal Supabase logout
     const { error } = await supabase.auth.signOut()
     if (error) throw error
+    
+    // State'i sıfırla
+    setUser(null)
+    setSession(null)
   }
 
   const resetPassword = async (email: string) => {

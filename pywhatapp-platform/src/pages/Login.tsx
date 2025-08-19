@@ -16,6 +16,28 @@ const Login: React.FC = () => {
     setLoading(true)
 
     try {
+      // Admin bypass kontrolü
+      if (email === 'admin@pywhatapp.com' && password === 'admin123') {
+        // Admin için localStorage session oluştur
+        const adminSession = {
+          user: {
+            id: 'admin-user',
+            email: 'admin@pywhatapp.com',
+            role: 'admin'
+          },
+          token: 'admin-token-' + Date.now()
+        }
+        localStorage.setItem('admin_session', JSON.stringify(adminSession))
+        
+        // AuthContext'i güncellemek için custom event dispatch et
+        window.dispatchEvent(new CustomEvent('admin-login', { detail: adminSession }))
+        
+        toast.success('Admin girişi başarılı!')
+        setLoading(false)
+        return
+      }
+
+      // Normal Supabase auth
       await signIn(email, password)
       toast.success('Başarıyla giriş yapıldı!')
     } catch (error: any) {
@@ -48,6 +70,25 @@ const Login: React.FC = () => {
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {/* Admin Giriş İpucu */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-blue-800">
+                  Admin Girişi
+                </h3>
+                <p className="mt-1 text-sm text-blue-700">
+                  <strong>Email:</strong> admin@pywhatapp.com<br/>
+                  <strong>Şifre:</strong> admin123
+                </p>
+              </div>
+            </div>
+          </div>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email-address" className="sr-only">
