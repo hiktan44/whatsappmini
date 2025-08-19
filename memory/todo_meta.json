@@ -3,37 +3,37 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "Mevcut PyWhatApp kodunu analiz et ve gereksinimlerini belirle",
-        "details": "1. Mevcut Streamlit kodunu incele. 2. Özellikler ve fonksiyonları listele. 3. UI/UX iyileştirme noktalarını tespit et.",
-        "status": "completed",
+        "content": "UI/UX Navigasyon İyileştirmeleri",
+        "details": "1. Kişiler sekmesine geri dön butonu ekle\n2. Şablonlar sekmesine geri dön butonu ekle\n3. Medya sekmesine geri dön butonu ekle\n4. Genel navigasyon akışını iyileştir",
+        "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Modern micro SaaS UI/UX tasarımını araştır",
-        "details": "1. WhatsApp benzeri modern UI tasarım trendlerini araştır. 2. Micro SaaS dashboard best practice'lerini incele. 3. Admin panel tasarım örneklerini topla. 4. Landing page tasarım trendlerini araştır. 5. Medya dosya upload UI/UX örneklerini incele.",
-        "status": "completed",
+        "content": "Hazır Şablon Sistemi",
+        "details": "1. Kullanıma hazır mesaj şablonları veritabanına ekle\n2. Şablon kategorileri oluştur (karşılama, bilgilendirme, pazarlama vb.)\n3. Şablon önizleme ve seçim arayüzü geliştir\n4. Dinamik değişkenler ile şablon entegrasyonu",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Gelişmiş React frontend micro SaaS uygulaması geliştir",
-        "details": "1. Landing page (özellikler, görseller, fiyatlandırma). 2. Kullanıcı kayıt/giriş sistemi. 3. Ana dashboard. 4. Admin dashboard. 5. Değişken yönetim sistemi (sayın, değerli, kıymetli, sevgili, tarih, custom). 6. Medya upload sistemi (ses, resim, video, belge). 7. WhatsApp kişi yönetimi. 8. Mesaj şablon editörü. 9. İstatistik ve raporlama. 10. Responsive tasarım.",
-        "status": "completed",
+        "content": "WhatsApp Kişi İçe Aktarma",
+        "details": "1. WhatsApp Web bağlantı sistemi oluştur\n2. Kişi listesini otomatik çekme fonksiyonu\n3. Çekilen kişileri veritabanına kaydetme\n4. Kişi listesi güncelleme ve senkronizasyon",
+        "status": "pending",
         "priority": "high"
       },
       "4": {
         "id": "4",
-        "content": "Kapsamlı backend API ve Supabase entegrasyonu",
-        "details": "1. Kullanıcı authentication sistemi. 2. Rol tabanlı yetkilendirme (admin, user). 3. WhatsApp Web entegrasyonu. 4. WhatsApp Business API entegrasyonu. 5. Kişi listesi senkronizasyonu. 6. Medya dosya upload ve storage. 7. Değişken sistemi API'leri. 8. Mesaj şablon yönetimi. 9. Toplu gönderim sistemi. 10. İstatistik ve analitik API'leri. 11. Cron job'lar için background işlemler.",
-        "status": "completed",
+        "content": "WhatsApp Web Bağlantı Sistemi",
+        "details": "1. QR kod ile WhatsApp Web bağlantı arayüzü\n2. Bağlantı durumu izleme\n3. Mesaj gönderme fonksiyonu entegrasyonu\n4. Bağlantı kopma durumunda yeniden bağlanma",
+        "status": "pending",
         "priority": "high"
       },
       "5": {
         "id": "5",
-        "content": "Uygulamayı test et ve deploy et",
-        "details": "1. Tüm fonksiyonları test et. 2. UI/UX testleri yap. 3. Uygulamayı kullanıcı dostu hale getir. 4. Production'a deploy et.",
-        "status": "completed",
+        "content": "WhatsApp Business API Entegrasyonu",
+        "details": "1. WhatsApp Business API için ayrı sekme/bölüm oluştur\n2. API key yapılandırma arayüzü\n3. Business API üzerinden mesaj gönderme sistemi\n4. API durumu izleme ve raporlama",
+        "status": "pending",
         "priority": "medium"
       }
     }
