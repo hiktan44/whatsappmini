@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { User, Session } from '@supabase/supabase-js'
-import { supabase } from '../services/api'
+import { User as AuthUser, Session } from '@supabase/supabase-js'
+import { supabase, User } from '../lib/supabase'
 
 interface AuthContextType {
-  user: User | null
+  user: AuthUser | null
+  profile: User | null
   session: Session | null
   loading: boolean
-  signUp: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string, fullName?: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
@@ -23,11 +24,51 @@ export const useAuth = () => {
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [profile, setProfile] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Admin session kontrolü
+  // Profile yükleme fonksiyonu
+  const loadProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle()
+
+      if (error) {
+        console.error('Error loading profile:', error)
+        return
+      }
+
+      if (!data) {
+        // Profile yoksa oluştur
+        const { data: newProfile, error: createError } = await supabase
+          .from('users')
+          .insert({
+            id: userId,
+            email: user?.email || '',
+            role: 'user',
+            subscription_plan: 'free',
+            is_active: true
+          })
+          .select()
+          .single()
+
+        if (createError) {
+          console.error('Error creating profile:', createError)
+        } else {
+          setProfile(newProfile)
+        }
+      } else {
+        setProfile(data)
+      }
+    } catch (error) {
+      console.error('Error in loadProfile:', error)
+    }
+  }
   const checkAdminSession = () => {
     const adminSession = localStorage.getItem('admin_session')
     if (adminSession) {
@@ -76,35 +117,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Get initial session
     const getInitialSession = async () => {
+      setLoading(true)
       try {
-        const { data: { session }, error } = await supabase.auth.getSession()
+        const { data: { user }, error } = await supabase.auth.getUser()
         if (error) {
-          console.warn('Supabase session error (using fallback):', error)
+          console.warn('Auth error:', error)
         } else {
-          setSession(session)
-          setUser(session?.user ?? null)
+          setUser(user)
+          if (user) {
+            await loadProfile(user.id)
+            const { data: { session } } = await supabase.auth.getSession()
+            setSession(session)
+          }
         }
       } catch (error) {
-        console.warn('Supabase connection failed (using fallback auth):', error)
+        console.warn('Supabase connection failed:', error)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     getInitialSession()
 
-    // Listen for auth changes
+    // Listen for auth changes - NO ASYNC OPERATIONS IN CALLBACK
     let subscription: any
     try {
       const { data } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
+        (event, session) => {
+          // Remove async from callback per best practices
           setSession(session)
           setUser(session?.user ?? null)
-          setLoading(false)
+          if (session?.user) {
+            // Load profile in a separate async function
+            loadProfile(session.user.id).catch(console.error)
+          } else {
+            setProfile(null)
+          }
+          if (!session) {
+            setLoading(false)
+          }
         }
       )
       subscription = data.subscription
     } catch (error) {
-      console.warn('Supabase auth listener failed (using fallback):', error)
+      console.warn('Supabase auth listener failed:', error)
     }
 
     // Admin login event listener
@@ -124,11 +180,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [])
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, fullName?: string) => {
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            full_name: fullName
+          }
+        }
       })
       if (error) throw error
     } catch (error: any) {
@@ -170,6 +232,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     // State'i sıfırla
     setUser(null)
+    setProfile(null)
     setSession(null)
   }
 
@@ -182,6 +245,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const value = {
     user,
+    profile,
     session,
     loading,
     signUp,

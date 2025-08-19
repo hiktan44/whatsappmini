@@ -1,4 +1,4 @@
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 import { useDashboardStats } from '@/hooks/useAnalytics';
 import { useCampaigns } from '@/hooks/useCampaigns';
 import { Button } from '@/components/ui/Button';
