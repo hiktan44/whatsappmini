@@ -33,10 +33,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (adminSession) {
       try {
         const parsed = JSON.parse(adminSession)
-        setUser(parsed.user as any)
-        setSession({ access_token: parsed.token } as any)
+        // Session süresi kontrolü (24 saat)
+        if (parsed.loginTime) {
+          const loginTime = new Date(parsed.loginTime)
+          const now = new Date()
+          const hoursDiff = (now.getTime() - loginTime.getTime()) / (1000 * 60 * 60)
+          
+          if (hoursDiff > 24) {
+            localStorage.removeItem('admin_session')
+            return false
+          }
+        }
+        
+        setUser({
+          ...parsed.user,
+          id: parsed.user.id,
+          email: parsed.user.email,
+          user_metadata: {
+            name: parsed.user.name || 'Admin User',
+            role: parsed.user.role || 'admin'
+          }
+        } as any)
+        setSession({ 
+          access_token: parsed.token,
+          user: parsed.user 
+        } as any)
         return true
       } catch (error) {
+        console.error('Admin session parse error:', error)
         localStorage.removeItem('admin_session')
       }
     }
@@ -52,12 +76,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession()
-      if (error) {
-        console.error('Error getting session:', error)
-      } else {
-        setSession(session)
-        setUser(session?.user ?? null)
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.warn('Supabase session error (using fallback):', error)
+        } else {
+          setSession(session)
+          setUser(session?.user ?? null)
+        }
+      } catch (error) {
+        console.warn('Supabase connection failed (using fallback auth):', error)
       }
       setLoading(false)
     }
@@ -65,13 +93,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     getInitialSession()
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session)
-        setUser(session?.user ?? null)
-        setLoading(false)
-      }
-    )
+    let subscription: any
+    try {
+      const { data } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          setSession(session)
+          setUser(session?.user ?? null)
+          setLoading(false)
+        }
+      )
+      subscription = data.subscription
+    } catch (error) {
+      console.warn('Supabase auth listener failed (using fallback):', error)
+    }
 
     // Admin login event listener
     const handleAdminLogin = (event: any) => {
@@ -83,25 +117,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     window.addEventListener('admin-login', handleAdminLogin)
 
     return () => {
-      subscription.unsubscribe()
+      if (subscription?.unsubscribe) {
+        subscription.unsubscribe()
+      }
       window.removeEventListener('admin-login', handleAdminLogin)
     }
   }, [])
 
   const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-    if (error) throw error
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+      if (error) throw error
+    } catch (error: any) {
+      if (error.message?.includes('not configured')) {
+        throw new Error('Kayıt sistemi şu anda kullanılamıyor. Lütfen admin girişi kullanın.')
+      }
+      throw error
+    }
   }
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    if (error) throw error
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      if (error) throw error
+    } catch (error: any) {
+      if (error.message?.includes('not configured')) {
+        throw new Error('Giriş sistemi şu anda kullanılamıyor. Lütfen admin girişi kullanın.')
+      }
+      throw error
+    }
   }
 
   const signOut = async () => {
@@ -109,8 +159,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('admin_session')
     
     // Normal Supabase logout
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error && !error.message?.includes('not configured')) {
+        throw error
+      }
+    } catch (error: any) {
+      console.warn('Supabase signOut error:', error)
+    }
     
     // State'i sıfırla
     setUser(null)

@@ -16,30 +16,67 @@ const Login: React.FC = () => {
     setLoading(true)
 
     try {
-      // Admin bypass kontrolü
-      if (email === 'admin@pywhatapp.com' && password === 'admin123') {
+      // Admin bypass kontrolü - Environment variables'dan al
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'admin@pywhatapp.com'
+      const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123'
+      
+      if (email === adminEmail && password === adminPassword) {
         // Admin için localStorage session oluştur
         const adminSession = {
           user: {
             id: 'admin-user',
-            email: 'admin@pywhatapp.com',
-            role: 'admin'
+            email: adminEmail,
+            role: 'admin',
+            name: 'System Administrator'
           },
-          token: 'admin-token-' + Date.now()
+          token: 'admin-token-' + Date.now(),
+          loginTime: new Date().toISOString(),
+          isAdmin: true
         }
         localStorage.setItem('admin_session', JSON.stringify(adminSession))
         
         // AuthContext'i güncellemek için custom event dispatch et
         window.dispatchEvent(new CustomEvent('admin-login', { detail: adminSession }))
         
-        toast.success('Admin girişi başarılı!')
+        toast.success('Admin girişi başarılı! Dashboard\'a yönlendiriliyorsunuz...')
         setLoading(false)
+        
+        // 1 saniye sonra redirect
+        setTimeout(() => {
+          window.location.href = '/dashboard'
+        }, 1000)
         return
       }
 
-      // Normal Supabase auth
-      await signIn(email, password)
-      toast.success('Başarıyla giriş yapıldı!')
+      // Normal Supabase auth deneme
+      try {
+        await signIn(email, password)
+        toast.success('Başarıyla giriş yapıldı!')
+      } catch (supabaseError: any) {
+        // Supabase hatası durumunda alternatif demo login kontrolü
+        if (email.includes('demo') || password === 'demo123') {
+          const demoSession = {
+            user: {
+              id: 'demo-user',
+              email: email,
+              role: 'user',
+              name: 'Demo User'
+            },
+            token: 'demo-token-' + Date.now(),
+            loginTime: new Date().toISOString(),
+            isDemo: true
+          }
+          localStorage.setItem('admin_session', JSON.stringify(demoSession))
+          window.dispatchEvent(new CustomEvent('admin-login', { detail: demoSession }))
+          toast.success('Demo girişi başarılı!')
+          setTimeout(() => {
+            window.location.href = '/dashboard'
+          }, 1000)
+          return
+        }
+        
+        throw supabaseError
+      }
     } catch (error: any) {
       toast.error('Giriş başarısız: ' + (error.message || 'Bilinmeyen hata'))
     } finally {
@@ -84,7 +121,8 @@ const Login: React.FC = () => {
                 </h3>
                 <p className="mt-1 text-sm text-blue-700">
                   <strong>Email:</strong> admin@pywhatapp.com<br/>
-                  <strong>Şifre:</strong> admin123
+                  <strong>Şifre:</strong> admin123<br/>
+                  <em className="text-blue-600">Demo için: demo@test.com / demo123</em>
                 </p>
               </div>
             </div>

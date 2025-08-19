@@ -1,9 +1,39 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Supabase environment variables with fallback
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://alaxtcfutcfgiqchbuwe.supabase.co'
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsYXh0Y2Z1dGNmZ2lxY2hidXdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU1NTkwNTAsImV4cCI6MjA3MTEzNTA1MH0.7l6tV2co8RBmh3qdwvF5tQJkfDcdWL_ceFirrWXGmdI'
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+// Supabase client with error handling
+let supabase: any
+try {
+  supabase = createClient(supabaseUrl, supabaseKey)
+} catch (error) {
+  console.warn('Supabase client creation failed, using mock client:', error)
+  // Mock supabase client for development
+  supabase = {
+    auth: {
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      signOut: () => Promise.resolve({ error: null }),
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      signInWithPassword: () => Promise.reject(new Error('Supabase not configured')),
+      signUp: () => Promise.reject(new Error('Supabase not configured')),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+    },
+    from: () => ({
+      select: () => ({
+        eq: () => ({
+          order: () => Promise.resolve({ data: [], error: null })
+        })
+      }),
+      insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      delete: () => Promise.resolve({ error: new Error('Supabase not configured') })
+    })
+  }
+}
+
+export { supabase }
 
 // Types
 export interface Contact {
