@@ -1,34 +1,17 @@
 import { useState, useEffect } from 'react'
 import { User } from '@supabase/supabase-js'
+import { useAuth } from '../contexts/AuthContext'
 import { ApiService, Contact, MessageTemplate, CustomVariable, MediaFile, Campaign } from '../services/api'
 import { toast } from 'react-hot-toast'
 
 export const useApi = () => {
   const [loading, setLoading] = useState(false)
-  const [user, setUser] = useState<User | null>(null)
-
-  // Get current user
-  const getCurrentUser = async () => {
-    try {
-      const user = await ApiService.getCurrentUser()
-      setUser(user)
-      return user
-    } catch (error: any) {
-      console.error('Error getting user:', error)
-      toast.error('Kullanıcı bilgileri alınırken hata oluştu')
-      return null
-    }
-  }
-
-  useEffect(() => {
-    getCurrentUser()
-  }, [])
+  const { user } = useAuth() // AuthContext'ten al
 
   return {
     user,
     loading,
-    setLoading,
-    getCurrentUser
+    setLoading
   }
 }
 

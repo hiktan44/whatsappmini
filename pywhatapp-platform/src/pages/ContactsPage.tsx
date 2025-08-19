@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useApi, useContacts } from '../hooks/useApi'
 import { Contact, ApiService } from '../services/api'
 import { toast } from 'react-hot-toast'
+import * as XLSX from 'xlsx'
 import {
   PlusIcon,
   TrashIcon,
@@ -102,13 +103,29 @@ const ContactsPage: React.FC = () => {
 
     setImporting(true)
     try {
-      const csvText = await file.text()
+      let csvText = ''
+      
+      if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
+        // Excel dosyası işleme
+        const arrayBuffer = await file.arrayBuffer()
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' })
+        const sheetName = workbook.SheetNames[0]
+        const worksheet = workbook.Sheets[sheetName]
+        csvText = XLSX.utils.sheet_to_csv(worksheet)
+      } else if (file.name.toLowerCase().endsWith('.csv')) {
+        // CSV dosyası işleme
+        csvText = await file.text()
+      } else {
+        toast.error('Desteklenmeyen dosya formatı. Lütfen CSV veya Excel dosyası seçin.')
+        return
+      }
+      
       const result = await ApiService.importContactsFromCSV(csvText, user.id, formData.group_name || undefined)
       
       if (result.data.success) {
         toast.success(`${result.data.successCount} kişi başarıyla içe aktarıldı!`)
         if (result.data.errors.length > 0) {
-          toast.error(`${result.data.errors.length} hatada sorun var`)
+          toast.error(`${result.data.errors.length} satırda sorun var`)
           console.log('Import errors:', result.data.errors)
         }
         fetchContacts()
@@ -169,7 +186,7 @@ const ContactsPage: React.FC = () => {
                 className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
               >
                 <DocumentArrowUpIcon className="-ml-1 mr-2 h-5 w-5" />
-                {importing ? 'İçe Aktarılıyor...' : 'CSV İçe Aktar'}
+                {importing ? 'İçe Aktarılıyor...' : 'Excel/CSV İçe Aktar'}
               </button>
               <button
                 onClick={downloadSampleCSV}
@@ -193,7 +210,7 @@ const ContactsPage: React.FC = () => {
         type="file"
         ref={fileInputRef}
         onChange={handleFileUpload}
-        accept=".csv"
+        accept=".csv,.xlsx,.xls"
         className="hidden"
       />
 

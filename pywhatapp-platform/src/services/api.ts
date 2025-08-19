@@ -473,7 +473,7 @@ export class ApiService {
 
   // WhatsApp Web Connection
   static async callWhatsAppWebConnect(payload: {
-    action: 'generate_qr' | 'connect' | 'disconnect' | 'status',
+    action: 'generate_qr' | 'connect' | 'disconnect' | 'status' | 'import_contacts',
     userId: string
   }) {
     try {

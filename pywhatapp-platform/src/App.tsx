@@ -9,6 +9,7 @@ import Landing from './pages/Landing'
 import ContactsPage from './pages/ContactsPage'
 import TemplatesPage from './pages/TemplatesPage'
 import MediaPage from './pages/MediaPage'
+import WhatsAppPage from './pages/WhatsAppPage'
 import LoadingSpinner from './components/LoadingSpinner'
 
 const AppRoutes: React.FC = () => {
@@ -27,6 +28,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/contacts" element={user ? <ContactsPage /> : <Navigate to="/login" />} />
       <Route path="/templates" element={user ? <TemplatesPage /> : <Navigate to="/login" />} />
       <Route path="/media" element={user ? <MediaPage /> : <Navigate to="/login" />} />
+      <Route path="/whatsapp" element={user ? <WhatsAppPage /> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )

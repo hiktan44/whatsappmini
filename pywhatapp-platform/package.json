@@ -11,6 +11,7 @@
     "preview": "yes | pnpm install && vite preview"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.18",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
@@ -40,7 +41,6 @@
     "@radix-ui/react-toggle-group": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.6",
     "@supabase/supabase-js": "^2.55.0",
-    "@heroicons/react": "^2.0.18",
     "@tanstack/react-query": "^5.85.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -65,6 +65,7 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.2",
+    "xlsx": "^0.18.5",
     "zod": "^3.24.1"
   },
   "devDependencies": {

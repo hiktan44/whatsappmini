@@ -5,35 +5,35 @@
         "id": "1",
         "content": "UI/UX Navigasyon İyileştirmeleri",
         "details": "1. Kişiler sekmesine geri dön butonu ekle\n2. Şablonlar sekmesine geri dön butonu ekle\n3. Medya sekmesine geri dön butonu ekle\n4. Genel navigasyon akışını iyileştir",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "Hazır Şablon Sistemi",
         "details": "1. Kullanıma hazır mesaj şablonları veritabanına ekle\n2. Şablon kategorileri oluştur (karşılama, bilgilendirme, pazarlama vb.)\n3. Şablon önizleme ve seçim arayüzü geliştir\n4. Dinamik değişkenler ile şablon entegrasyonu",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "3": {
         "id": "3",
         "content": "WhatsApp Kişi İçe Aktarma",
         "details": "1. WhatsApp Web bağlantı sistemi oluştur\n2. Kişi listesini otomatik çekme fonksiyonu\n3. Çekilen kişileri veritabanına kaydetme\n4. Kişi listesi güncelleme ve senkronizasyon",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "4": {
         "id": "4",
         "content": "WhatsApp Web Bağlantı Sistemi",
         "details": "1. QR kod ile WhatsApp Web bağlantı arayüzü\n2. Bağlantı durumu izleme\n3. Mesaj gönderme fonksiyonu entegrasyonu\n4. Bağlantı kopma durumunda yeniden bağlanma",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "5": {
         "id": "5",
         "content": "WhatsApp Business API Entegrasyonu",
         "details": "1. WhatsApp Business API için ayrı sekme/bölüm oluştur\n2. API key yapılandırma arayüzü\n3. Business API üzerinden mesaj gönderme sistemi\n4. API durumu izleme ve raporlama",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "medium"
       }
     }

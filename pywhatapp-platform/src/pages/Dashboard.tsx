@@ -10,9 +10,9 @@ const Dashboard: React.FC = () => {
   const { user } = useApi()
   const { signOut } = useAuth()
   const navigate = useNavigate()
-  const { contacts } = useContacts(user?.id || null)
-  const { templates } = useTemplates(user?.id || null)
-  const { variables } = useVariables(user?.id || null)
+  const { contacts, fetchContacts } = useContacts(user?.id || null)
+  const { templates, fetchTemplates } = useTemplates(user?.id || null)
+  const { variables, fetchVariables } = useVariables(user?.id || null)
   const { mediaFiles } = useMediaFiles(user?.id || null)
   const { sendMessage, sending } = useWhatsApp()
   const whatsappWeb = useWhatsAppWeb(user?.id || null)
@@ -26,10 +26,14 @@ const Dashboard: React.FC = () => {
           const result = await ApiService.setupDefaultData(user.id)
           if (result.success && result.templates.length > 0) {
             toast.success(`${result.templates.length} hazır şablon ve ${result.variables?.length || 0} değişken eklendi!`)
-            // Refresh data
-            setTimeout(() => {
-              window.location.reload()
-            }, 2000)
+            // SPA prensiplerine uygun olarak hook'ları yenile
+            setTimeout(async () => {
+              await Promise.all([
+                fetchTemplates(),
+                fetchVariables(),
+                fetchContacts()
+              ])
+            }, 1000)
           }
         } catch (error) {
           console.error('Error setting up default data:', error)
@@ -38,7 +42,7 @@ const Dashboard: React.FC = () => {
     }
     
     setupDefaultData()
-  }, [user?.id, templates.length, variables.length])
+  }, [user?.id, templates.length, variables.length, fetchTemplates, fetchVariables, fetchContacts])
 
   const [activeTab, setActiveTab] = useState('send')
   const [selectedContacts, setSelectedContacts] = useState<string[]>([])
@@ -175,6 +179,12 @@ const Dashboard: React.FC = () => {
                   className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
                 >
                   Medya
+                </Link>
+                <Link
+                  to="/whatsapp"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  WhatsApp
                 </Link>
               </nav>
             </div>
