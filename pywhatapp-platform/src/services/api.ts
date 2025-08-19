@@ -470,6 +470,58 @@ export class ApiService {
       totalCampaigns: campaignsResult.count || 0
     }
   }
+
+  // WhatsApp Web Connection
+  static async callWhatsAppWebConnect(payload: {
+    action: 'generate_qr' | 'connect' | 'disconnect' | 'status',
+    userId: string
+  }) {
+    try {
+      const { data, error } = await supabase.functions.invoke('whatsapp-web-connect', {
+        body: payload
+      })
+      
+      if (error) throw error
+      return data
+    } catch (error: any) {
+      console.error('Error in callWhatsAppWebConnect:', error)
+      throw error
+    }
+  }
+
+  // WhatsApp Business API
+  static async callWhatsAppBusinessAPI(payload: {
+    action: 'save_settings' | 'get_settings' | 'test_connection' | 'send_message',
+    userId: string,
+    settings?: any
+  }) {
+    try {
+      const { data, error } = await supabase.functions.invoke('whatsapp-business-api', {
+        body: payload
+      })
+      
+      if (error) throw error
+      return data
+    } catch (error: any) {
+      console.error('Error in callWhatsAppBusinessAPI:', error)
+      throw error
+    }
+  }
+
+  // Setup Default Data
+  static async setupDefaultData(userId: string) {
+    try {
+      const { data, error } = await supabase.functions.invoke('setup-default-data', {
+        body: { userId }
+      })
+      
+      if (error) throw error
+      return data
+    } catch (error: any) {
+      console.error('Error in setupDefaultData:', error)
+      throw error
+    }
+  }
 }
 
 export default ApiService

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useApi, useContacts, useTemplates, useVariables, useMediaFiles, useWhatsApp } from '../hooks/useApi'
+import { useApi, useContacts, useTemplates, useVariables, useMediaFiles, useWhatsApp, useWhatsAppWeb, useWhatsAppBusinessAPI } from '../hooks/useApi'
 import { useAuth } from '../contexts/AuthContext'
 import { PaperAirplaneIcon, PhoneIcon, DocumentTextIcon, PhotoIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import { Toaster, toast } from 'react-hot-toast'
+import { ApiService } from '../services/api'
 
 const Dashboard: React.FC = () => {
   const { user } = useApi()
@@ -14,6 +15,30 @@ const Dashboard: React.FC = () => {
   const { variables } = useVariables(user?.id || null)
   const { mediaFiles } = useMediaFiles(user?.id || null)
   const { sendMessage, sending } = useWhatsApp()
+  const whatsappWeb = useWhatsAppWeb(user?.id || null)
+  const whatsappBusinessAPI = useWhatsAppBusinessAPI(user?.id || null)
+
+  // İlk açılışta hazır şablonları yükle
+  React.useEffect(() => {
+    const setupDefaultData = async () => {
+      if (user?.id && templates.length === 0 && variables.length === 0) {
+        try {
+          const result = await ApiService.setupDefaultData(user.id)
+          if (result.success && result.templates.length > 0) {
+            toast.success(`${result.templates.length} hazır şablon ve ${result.variables?.length || 0} değişken eklendi!`)
+            // Refresh data
+            setTimeout(() => {
+              window.location.reload()
+            }, 2000)
+          }
+        } catch (error) {
+          console.error('Error setting up default data:', error)
+        }
+      }
+    }
+    
+    setupDefaultData()
+  }, [user?.id, templates.length, variables.length])
 
   const [activeTab, setActiveTab] = useState('send')
   const [selectedContacts, setSelectedContacts] = useState<string[]>([])
@@ -253,6 +278,26 @@ const Dashboard: React.FC = () => {
                   Mesaj Gönder
                 </button>
                 <button
+                  onClick={() => setActiveTab('whatsapp-web')}
+                  className={`py-4 px-6 border-b-2 font-medium text-sm ${
+                    activeTab === 'whatsapp-web'
+                      ? 'border-green-500 text-green-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  WhatsApp Web
+                </button>
+                <button
+                  onClick={() => setActiveTab('business-api')}
+                  className={`py-4 px-6 border-b-2 font-medium text-sm ${
+                    activeTab === 'business-api'
+                      ? 'border-green-500 text-green-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Business API
+                </button>
+                <button
                   onClick={() => setActiveTab('contacts')}
                   className={`py-4 px-6 border-b-2 font-medium text-sm ${
                     activeTab === 'contacts'
@@ -405,6 +450,200 @@ const Dashboard: React.FC = () => {
                         </>
                       )}
                     </button>
+                  </div>
+                </div>
+              )}              {/* WhatsApp Web Tab */}
+              {activeTab === 'whatsapp-web' && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                      WhatsApp Web Bağlantısı
+                      <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        whatsappWeb.connected ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {whatsappWeb.connected ? 'Bağlı' : 'Bağlı Değil'}
+                      </span>
+                    </h3>
+                    
+                    {!whatsappWeb.connected ? (
+                      <div className="text-center">
+                        {whatsappWeb.qrCode ? (
+                          <div className="space-y-4">
+                            <div className="inline-block p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg">
+                              <div className="bg-gray-100 p-8 rounded text-gray-500">
+                                QR Kod: {whatsappWeb.qrCode.substring(0, 20)}...
+                                <br />
+                                <small>Gerçek QR kod burada gösterilecek</small>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600">
+                              Telefon unuzdan WhatsApp açın, Menü {'>'} Bağlı Cihazlar seçeneğine gidin ve QR kodu tarayın.
+                            </p>
+                            <div className="flex justify-center space-x-3">
+                              <button
+                                onClick={whatsappWeb.connect}
+                                className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                              >
+                                Bağlan (Simüle)
+                              </button>
+                              <button
+                                onClick={whatsappWeb.generateQR}
+                                disabled={whatsappWeb.connecting}
+                                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                              >
+                                {whatsappWeb.connecting ? 'Yükleniyor...' : 'Yeni QR Kod Üret'}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-4">
+                            <div className="p-8 text-center">
+                              <PhoneIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                              <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                                WhatsApp Web'e Bağlan
+                              </h4>
+                              <p className="text-gray-600 mb-4">
+                                WhatsApp Web bağlantısı kurarak mesaj gönderebilirsiniz.
+                              </p>
+                              <button
+                                onClick={whatsappWeb.generateQR}
+                                disabled={whatsappWeb.connecting}
+                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                              >
+                                {whatsappWeb.connecting ? 'Yükleniyor...' : 'Bağlantı Kur'}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-center space-y-4">
+                        <div className="inline-flex items-center px-4 py-2 bg-green-50 border border-green-200 rounded-lg">
+                          <div className="h-3 w-3 bg-green-400 rounded-full mr-3"></div>
+                          <span className="text-green-800 font-medium">WhatsApp Web Bağlı</span>
+                        </div>
+                        <p className="text-gray-600">Artık WhatsApp Web üzerinden mesaj gönderebilirsiniz.</p>
+                        <button
+                          onClick={whatsappWeb.disconnect}
+                          className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        >
+                          Bağlantıyı Kes
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Business API Tab */}
+              {activeTab === 'business-api' && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                      WhatsApp Business API
+                      <span className={`ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        whatsappBusinessAPI.settings.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {whatsappBusinessAPI.settings.isActive ? 'Aktif' : 'Pasif'}
+                      </span>
+                    </h3>
+                    
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <Cog6ToothIcon className="h-5 w-5 text-blue-400" />
+                        </div>
+                        <div className="ml-3">
+                          <h4 className="text-sm font-medium text-blue-800">API Ayarları</h4>
+                          <div className="mt-2 text-sm text-blue-700">
+                            <p>WhatsApp Business API kullanımı için gerekli bilgileri girin.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                        whatsappBusinessAPI.saveSettings(whatsappBusinessAPI.settings)
+                      }}
+                      className="space-y-6"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label htmlFor="apiKey" className="block text-sm font-medium text-gray-700 mb-2">
+                            API Key
+                          </label>
+                          <input
+                            type="password"
+                            id="apiKey"
+                            value={whatsappBusinessAPI.settings.apiKey}
+                            onChange={(e) => whatsappBusinessAPI.setSettings(prev => ({...prev, apiKey: e.target.value}))}
+                            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                            placeholder="API key girin..."
+                          />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="phoneNumberId" className="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number ID
+                          </label>
+                          <input
+                            type="text"
+                            id="phoneNumberId"
+                            value={whatsappBusinessAPI.settings.phoneNumberId}
+                            onChange={(e) => whatsappBusinessAPI.setSettings(prev => ({...prev, phoneNumberId: e.target.value}))}
+                            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                            placeholder="Phone Number ID girin..."
+                          />
+                        </div>
+                        
+                        <div className="md:col-span-2">
+                          <label htmlFor="accessToken" className="block text-sm font-medium text-gray-700 mb-2">
+                            Access Token
+                          </label>
+                          <input
+                            type="password"
+                            id="accessToken"
+                            value={whatsappBusinessAPI.settings.accessToken}
+                            onChange={(e) => whatsappBusinessAPI.setSettings(prev => ({...prev, accessToken: e.target.value}))}
+                            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                            placeholder="Access token girin..."
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center">
+                        <input
+                          id="isActive"
+                          type="checkbox"
+                          checked={whatsappBusinessAPI.settings.isActive}
+                          onChange={(e) => whatsappBusinessAPI.setSettings(prev => ({...prev, isActive: e.target.checked}))}
+                          className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor="isActive" className="ml-2 block text-sm text-gray-900">
+                          WhatsApp Business API'yi etkinleştir
+                        </label>
+                      </div>
+                      
+                      <div className="flex justify-end space-x-3">
+                        <button
+                          type="button"
+                          onClick={whatsappBusinessAPI.testConnection}
+                          disabled={whatsappBusinessAPI.loading}
+                          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                        >
+                          {whatsappBusinessAPI.loading ? 'Test Ediliyor...' : 'Bağlantıyı Test Et'}
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={whatsappBusinessAPI.loading}
+                          className="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                        >
+                          {whatsappBusinessAPI.loading ? 'Kaydediliyor...' : 'Ayarları Kaydet'}
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
               )}

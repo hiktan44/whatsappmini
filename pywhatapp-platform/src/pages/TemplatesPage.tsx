@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useApi, useTemplates, useVariables } from '../hooks/useApi'
 import { MessageTemplate } from '../services/api'
 import { toast } from 'react-hot-toast'
@@ -9,7 +10,8 @@ import {
   DocumentTextIcon,
   EyeIcon,
   TagIcon,
-  SparklesIcon
+  SparklesIcon,
+  ArrowLeftIcon
 } from '@heroicons/react/24/outline'
 
 const TemplatesPage: React.FC = () => {
@@ -187,6 +189,15 @@ const TemplatesPage: React.FC = () => {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div>
+              <div className="flex items-center space-x-4 mb-2">
+                <Link 
+                  to="/dashboard" 
+                  className="flex items-center text-emerald-600 hover:text-emerald-700 font-medium"
+                >
+                  <ArrowLeftIcon className="h-5 w-5 mr-2" />
+                  Dashboard'a Dön
+                </Link>
+              </div>
               <h1 className="text-3xl font-bold text-gray-900">Şablon Yönetimi</h1>
               <p className="mt-1 text-sm text-gray-600">Mesaj şablonlarınızı oluşturun ve düzenleyin</p>
             </div>

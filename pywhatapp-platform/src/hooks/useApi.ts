@@ -356,3 +356,224 @@ export const useWhatsApp = () => {
     sendBulkMessages
   }
 }
+
+export const useWhatsAppWeb = (userId: string | null) => {
+  const [connected, setConnected] = useState(false)
+  const [connecting, setConnecting] = useState(false)
+  const [qrCode, setQrCode] = useState<string | null>(null)
+
+  const generateQR = async () => {
+    if (!userId) return
+    
+    setConnecting(true)
+    try {
+      const response = await ApiService.callWhatsAppWebConnect({
+        action: 'generate_qr',
+        userId
+      })
+      
+      if (response.success) {
+        setQrCode(response.qrCode)
+        toast.success('QR kod oluşturuldu')
+      }
+    } catch (error: any) {
+      console.error('Error generating QR:', error)
+      toast.error('QR kod oluşturulamadı')
+    } finally {
+      setConnecting(false)
+    }
+  }
+
+  const connect = async () => {
+    if (!userId) return
+    
+    try {
+      const response = await ApiService.callWhatsAppWebConnect({
+        action: 'connect',
+        userId
+      })
+      
+      if (response.success) {
+        setConnected(true)
+        setQrCode(null)
+        toast.success('WhatsApp Web bağlantısı kuruldu')
+      }
+    } catch (error: any) {
+      console.error('Error connecting:', error)
+      toast.error('Bağlantı kurulamadı')
+    }
+  }
+
+  const disconnect = async () => {
+    if (!userId) return
+    
+    try {
+      const response = await ApiService.callWhatsAppWebConnect({
+        action: 'disconnect',
+        userId
+      })
+      
+      if (response.success) {
+        setConnected(false)
+        setQrCode(null)
+        toast.success('WhatsApp Web bağlantısı kesildi')
+      }
+    } catch (error: any) {
+      console.error('Error disconnecting:', error)
+      toast.error('Bağlantı kesilemedi')
+    }
+  }
+
+  const checkStatus = async () => {
+    if (!userId) return
+    
+    try {
+      const response = await ApiService.callWhatsAppWebConnect({
+        action: 'status',
+        userId
+      })
+      
+      if (response.success) {
+        setConnected(response.status === 'connected')
+        setQrCode(response.qrCode)
+      }
+    } catch (error: any) {
+      console.error('Error checking status:', error)
+    }
+  }
+
+  useEffect(() => {
+    checkStatus()
+  }, [userId])
+
+  return {
+    connected,
+    connecting,
+    qrCode,
+    generateQR,
+    connect,
+    disconnect,
+    checkStatus
+  }
+}
+
+export const useWhatsAppBusinessAPI = (userId: string | null) => {
+  const [settings, setSettings] = useState({
+    apiKey: '',
+    phoneNumberId: '',
+    accessToken: '',
+    isActive: false
+  })
+  const [loading, setLoading] = useState(false)
+
+  const saveSettings = async (newSettings: typeof settings) => {
+    if (!userId) return
+    
+    setLoading(true)
+    try {
+      const response = await ApiService.callWhatsAppBusinessAPI({
+        action: 'save_settings',
+        userId,
+        settings: newSettings
+      })
+      
+      if (response.success) {
+        setSettings(newSettings)
+        toast.success('API ayarları kaydedildi')
+      }
+    } catch (error: any) {
+      console.error('Error saving settings:', error)
+      toast.error('Ayarlar kaydedilemedi')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const testConnection = async () => {
+    if (!userId) return
+    
+    setLoading(true)
+    try {
+      const response = await ApiService.callWhatsAppBusinessAPI({
+        action: 'test_connection',
+        userId,
+        settings
+      })
+      
+      if (response.success) {
+        toast.success('API bağlantısı başarılı')
+      } else {
+        toast.error(response.message || 'API bağlantısı başarısız')
+      }
+    } catch (error: any) {
+      console.error('Error testing connection:', error)
+      toast.error('Bağlantı testi başarısız')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const sendMessage = async (phoneNumber: string, message: string, mediaUrl?: string) => {
+    if (!userId) return
+    
+    setLoading(true)
+    try {
+      const response = await ApiService.callWhatsAppBusinessAPI({
+        action: 'send_message',
+        userId,
+        settings: {
+          phoneNumber,
+          message,
+          mediaUrl
+        }
+      })
+      
+      if (response.success) {
+        toast.success('Mesaj gönderildi')
+        return response
+      } else {
+        toast.error(response.message || 'Mesaj gönderilemedi')
+      }
+    } catch (error: any) {
+      console.error('Error sending message:', error)
+      toast.error('Mesaj gönderme hatası')
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const loadSettings = async () => {
+    if (!userId) return
+    
+    setLoading(true)
+    try {
+      const response = await ApiService.callWhatsAppBusinessAPI({
+        action: 'get_settings',
+        userId
+      })
+      
+      if (response.success) {
+        setSettings(response.settings)
+      }
+    } catch (error: any) {
+      console.error('Error loading settings:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadSettings()
+  }, [userId])
+
+  return {
+    settings,
+    loading,
+    saveSettings,
+    testConnection,
+    sendMessage,
+    loadSettings,
+    setSettings
+  }
+}

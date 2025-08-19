@@ -1,13 +1,21 @@
 CREATE TABLE message_logs (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id uuid NOT NULL,
-    recipient_phone text NOT NULL,
-    recipient_name text,
+    contact_phone text NOT NULL,
     message_content text NOT NULL,
-    template_id uuid,
-    media_files jsonb DEFAULT '[]'::jsonb,
-    status text DEFAULT 'sent',
-    delivery_status text DEFAULT 'pending',
+    media_url text,
+    message_type text DEFAULT 'text' CHECK (message_type IN ('text',
+    'image',
+    'video',
+    'audio',
+    'document')),
+    status text DEFAULT 'pending' CHECK (status IN ('pending',
+    'sent',
+    'delivered',
+    'failed')),
+    sent_via text CHECK (sent_via IN ('web',
+    'api')),
     error_message text,
-    sent_at timestamptz DEFAULT now()
+    sent_at timestamptz DEFAULT now(),
+    created_at timestamptz DEFAULT now()
 );

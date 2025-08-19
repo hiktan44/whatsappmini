@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useApi, useMediaFiles } from '../hooks/useApi'
 import { MediaFile } from '../services/api'
 import { toast } from 'react-hot-toast'
@@ -11,7 +12,8 @@ import {
   FilmIcon,
   MusicalNoteIcon,
   FolderIcon,
-  MagnifyingGlassIcon
+  MagnifyingGlassIcon,
+  ArrowLeftIcon
 } from '@heroicons/react/24/outline'
 
 const MediaPage: React.FC = () => {
@@ -167,6 +169,15 @@ const MediaPage: React.FC = () => {
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <div>
+              <div className="flex items-center space-x-4 mb-2">
+                <Link 
+                  to="/dashboard" 
+                  className="flex items-center text-emerald-600 hover:text-emerald-700 font-medium"
+                >
+                  <ArrowLeftIcon className="h-5 w-5 mr-2" />
+                  Dashboard'a Dön
+                </Link>
+              </div>
               <h1 className="text-3xl font-bold text-gray-900">Medya Yönetimi</h1>
               <p className="mt-1 text-sm text-gray-600">Resim, video, ses ve belge dosyalarınızı yönetin</p>
             </div>
