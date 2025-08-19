@@ -41,6 +41,9 @@ export interface Contact {
   user_id: string
   name: string
   phone_number: string
+  email?: string
+  notes?: string
+  tags?: string[]
   group_id?: string
   created_at: string
 }
@@ -58,6 +61,7 @@ export interface MessageTemplate {
   user_id: string
   template_name: string
   content: string
+  category?: string
   variables?: string[]
   created_at: string
 }
@@ -79,6 +83,7 @@ export interface MediaFile {
   file_type: string
   file_url: string
   file_size: number
+  mime_type?: string
   created_at: string
 }
 
@@ -261,41 +266,6 @@ export class ApiService {
   }
 
   // Media Files
-  static async uploadMediaFile(file: File, userId: string): Promise<MediaFile> {
-    // Upload file to Supabase Storage
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${userId}/${Date.now()}.${fileExt}`
-    
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('media-files')
-      .upload(fileName, file)
-    
-    if (uploadError) throw uploadError
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('media-files')
-      .getPublicUrl(fileName)
-
-    // Save file info to database
-    const mediaFile = {
-      user_id: userId,
-      file_name: file.name,
-      file_type: file.type,
-      file_url: publicUrl,
-      file_size: file.size
-    }
-
-    const { data, error } = await supabase
-      .from('media_files')
-      .insert([mediaFile])
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
-  }
-
   static async getMediaFiles(userId: string): Promise<MediaFile[]> {
     const { data, error } = await supabase
       .from('media_files')
@@ -349,17 +319,91 @@ export class ApiService {
 
   // Edge Functions
   static async sendWhatsAppMessage(payload: {
-    contacts: string[], // phone numbers
+    contacts: string[], // phone numbers as recipients
     message: string,
     mediaUrl?: string,
     variables?: Record<string, string>
   }) {
-    const { data, error } = await supabase.functions.invoke('send-whatsapp-message', {
-      body: payload
-    })
-    
-    if (error) throw error
-    return data
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('User not authenticated')
+
+      // Convert contacts to required format
+      const recipients = payload.contacts.map(phone => ({ phone, name: '' }))
+      
+      const { data, error } = await supabase.functions.invoke('whatsapp-send', {
+        body: {
+          recipients,
+          message: payload.message,
+          templateId: null,
+          mediaFiles: payload.mediaUrl ? [payload.mediaUrl] : null,
+          userId: user.id
+        }
+      })
+      
+      if (error) throw error
+      return data
+    } catch (error: any) {
+      console.error('Error in sendWhatsAppMessage:', error)
+      throw error
+    }
+  }
+
+  static async uploadMediaFile(file: File, userId: string): Promise<MediaFile> {
+    try {
+      // Convert file to base64
+      const fileData = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+
+      // Use edge function to upload
+      const { data, error } = await supabase.functions.invoke('media-upload', {
+        body: {
+          fileData,
+          fileName: file.name,
+          fileType: file.type.split('/')[0], // 'image', 'video', etc.
+          userId
+        }
+      })
+
+      if (error) throw error
+
+      // Return in MediaFile format
+      return {
+        id: data.data.id,
+        user_id: userId,
+        file_name: data.data.fileName,
+        file_type: data.data.fileType,
+        file_url: data.data.publicUrl,
+        file_size: data.data.fileSize,
+        mime_type: data.data.mimeType,
+        created_at: data.data.uploadedAt
+      }
+    } catch (error: any) {
+      console.error('Error in uploadMediaFile:', error)
+      throw error
+    }
+  }
+
+  static async importContactsFromCSV(csvData: string, userId: string, groupName?: string) {
+    try {
+      const { data, error } = await supabase.functions.invoke('import-contacts', {
+        body: {
+          csvData,
+          userId,
+          groupName
+        }
+      })
+      
+      if (error) throw error
+      return data
+    } catch (error: any) {
+      console.error('Error in importContactsFromCSV:', error)
+      throw error
+    }
   }
 
   static async sendBulkMessages(payload: {

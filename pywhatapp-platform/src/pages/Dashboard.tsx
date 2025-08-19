@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useApi, useContacts, useTemplates, useVariables, useMediaFiles, useWhatsApp } from '../hooks/useApi'
-import { PaperAirplaneIcon, PhoneIcon, DocumentTextIcon, PhotoIcon, Cog6ToothIcon } from '@heroicons/react/24/outline'
-import { Toaster } from 'react-hot-toast'
+import { useAuth } from '../contexts/AuthContext'
+import { PaperAirplaneIcon, PhoneIcon, DocumentTextIcon, PhotoIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
+import { Toaster, toast } from 'react-hot-toast'
 
 const Dashboard: React.FC = () => {
   const { user } = useApi()
+  const { signOut } = useAuth()
+  const navigate = useNavigate()
   const { contacts } = useContacts(user?.id || null)
   const { templates } = useTemplates(user?.id || null)
   const { variables } = useVariables(user?.id || null)
@@ -16,6 +20,15 @@ const Dashboard: React.FC = () => {
   const [messageText, setMessageText] = useState('')
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
   const [selectedMedia, setSelectedMedia] = useState<string>('')
+
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      navigate('/login')
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
+  }
 
   // Process message with variables
   const processMessage = (text: string) => {
@@ -37,12 +50,12 @@ const Dashboard: React.FC = () => {
 
   const handleSendMessage = async () => {
     if (selectedContacts.length === 0) {
-      alert('Lütfen en az bir kişi seçin')
+      toast.error('Lütfen en az bir kişi seçin')
       return
     }
     
     if (!messageText.trim()) {
-      alert('Lütfen mesaj metni girin')
+      toast.error('Lütfen mesaj metni girin')
       return
     }
 
@@ -104,16 +117,50 @@ const Dashboard: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <img className="h-8 w-8" src="/logo.svg" alt="PyWhatApp" />
+                <div className="h-8 w-8 bg-green-600 rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">PW</span>
+                </div>
               </div>
               <div className="ml-4">
-                <h1 className="text-xl font-semibold text-gray-900">PyWhatApp Dashboard</h1>
+                <h1 className="text-xl font-semibold text-gray-900">PyWhatApp</h1>
               </div>
+              
+              {/* Navigation */}
+              <nav className="ml-8 hidden md:flex space-x-4">
+                <Link
+                  to="/dashboard"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-green-600 bg-green-50 border border-green-200"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/contacts"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  Kişiler
+                </Link>
+                <Link
+                  to="/templates"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  Şablonlar
+                </Link>
+                <Link
+                  to="/media"
+                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  Medya
+                </Link>
+              </nav>
             </div>
-            <div className="flex items-center">
-              <span className="text-sm text-gray-500 mr-4">Hoşgeldin, {user?.email}</span>
-              <button className="p-2 rounded-md text-gray-400 hover:text-gray-500">
-                <Cog6ToothIcon className="h-6 w-6" />
+            <div className="flex items-center space-x-4">
+              <span className="text-sm text-gray-500">Hoşgeldin, {user?.email}</span>
+              <button 
+                onClick={handleSignOut}
+                className="p-2 rounded-md text-gray-400 hover:text-gray-500"
+                title="Çıkış Yap"
+              >
+                <ArrowRightOnRectangleIcon className="h-6 w-6" />
               </button>
             </div>
           </div>

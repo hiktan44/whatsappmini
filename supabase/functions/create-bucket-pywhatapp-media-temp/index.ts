@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
     };
 
     // Add optional configurations
-    bucketConfig.allowed_mime_types = ["image/*", "video/*", "audio/*", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/plain"];
+    bucketConfig.allowed_mime_types = ["image/*", "video/*", "audio/*", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"];
     bucketConfig.file_size_limit = 52428800;
 
     // Create bucket using Storage API
@@ -111,7 +111,7 @@ Deno.serve(async (req) => {
         bucket: {
         name: 'pywhatapp-media',
         public: true,
-        allowed_mime_types: ["image/*", "video/*", "audio/*", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/plain"],
+        allowed_mime_types: ["image/*", "video/*", "audio/*", "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"],
         file_size_limit: 52428800,
         policies: policyResults
         }

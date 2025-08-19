@@ -1,12 +1,10 @@
 CREATE TABLE contacts (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL,
-    name VARCHAR(255),
-    phone VARCHAR(20) NOT NULL,
-    email VARCHAR(255),
-    tags JSONB DEFAULT '[]',
-    notes TEXT,
-    is_active BOOLEAN DEFAULT true,
-    created_at TIMESTAMP DEFAULT now(),
-    updated_at TIMESTAMP DEFAULT now()
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
+    name text NOT NULL,
+    phone_number text NOT NULL,
+    group_name text,
+    notes text,
+    created_at timestamptz DEFAULT now(),
+    updated_at timestamptz DEFAULT now()
 );

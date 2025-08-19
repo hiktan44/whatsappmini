@@ -1,0 +1,174 @@
+
+> react_repo@0.0.0 build
+> yes | pnpm install && rm -rf node_modules/.vite-temp && tsc -b && vite build
+
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: esbuild.                                            │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Done in 782ms using pnpm v10.12.4
+src/pages/ContactsPage.tsx:37:34 - error TS2339: Property 'phone' does not exist on type 'Contact'.
+
+37                          contact.phone.includes(searchTerm)
+                                    ~~~~~
+
+src/pages/ContactsPage.tsx:38:61 - error TS2339: Property 'tags' does not exist on type 'Contact'.
+
+38     const matchesGroup = selectedGroup === 'all' || contact.tags?.includes(selectedGroup)
+                                                               ~~~~
+
+src/pages/ContactsPage.tsx:43:61 - error TS2339: Property 'tags' does not exist on type 'Contact'.
+
+43   const groups = ['all', ...new Set(contacts.flatMap(c => c.tags || []).filter(Boolean))]
+                                                               ~~~~
+
+src/pages/ContactsPage.tsx:59:11 - error TS2353: Object literal may only specify known properties, and 'tags' does not exist in type 'Partial<Contact>'.
+
+59           tags: formData.group_name ? [formData.group_name] : undefined
+             ~~~~
+
+src/pages/ContactsPage.tsx:65:11 - error TS2353: Object literal may only specify known properties, and 'tags' does not exist in type 'Omit<Contact, "created_at" | "id">'.
+
+65           tags: formData.group_name ? [formData.group_name] : undefined
+             ~~~~
+
+src/pages/ContactsPage.tsx:77:22 - error TS2339: Property 'phone' does not exist on type 'Contact'.
+
+77       phone: contact.phone,
+                        ~~~~~
+
+src/pages/ContactsPage.tsx:78:22 - error TS2339: Property 'email' does not exist on type 'Contact'.
+
+78       email: contact.email || '',
+                        ~~~~~
+
+src/pages/ContactsPage.tsx:79:22 - error TS2339: Property 'notes' does not exist on type 'Contact'.
+
+79       notes: contact.notes || '',
+                        ~~~~~
+
+src/pages/ContactsPage.tsx:80:27 - error TS2339: Property 'tags' does not exist on type 'Contact'.
+
+80       group_name: contact.tags?.[0] || ''
+                             ~~~~
+
+src/pages/ContactsPage.tsx:369:36 - error TS2339: Property 'tags' does not exist on type 'Contact'.
+
+369                           {contact.tags && contact.tags.length > 0 && (
+                                       ~~~~
+
+src/pages/ContactsPage.tsx:369:52 - error TS2339: Property 'tags' does not exist on type 'Contact'.
+
+369                           {contact.tags && contact.tags.length > 0 && (
+                                                       ~~~~
+
+src/pages/ContactsPage.tsx:371:40 - error TS2339: Property 'tags' does not exist on type 'Contact'.
+
+371                               {contact.tags[0]}
+                                           ~~~~
+
+src/pages/ContactsPage.tsx:376:73 - error TS2339: Property 'phone' does not exist on type 'Contact'.
+
+376                           <p className="text-sm text-gray-600">{contact.phone}</p>
+                                                                            ~~~~~
+
+src/pages/ContactsPage.tsx:377:36 - error TS2339: Property 'email' does not exist on type 'Contact'.
+
+377                           {contact.email && (
+                                       ~~~~~
+
+src/pages/ContactsPage.tsx:378:85 - error TS2339: Property 'email' does not exist on type 'Contact'.
+
+378                             <span className="ml-2 text-sm text-gray-500">• {contact.email}</span>
+                                                                                        ~~~~~
+
+src/pages/ContactsPage.tsx:381:34 - error TS2339: Property 'notes' does not exist on type 'Contact'.
+
+381                         {contact.notes && (
+                                     ~~~~~
+
+src/pages/ContactsPage.tsx:382:87 - error TS2339: Property 'notes' does not exist on type 'Contact'.
+
+382                           <p className="text-sm text-gray-500 mt-1 truncate">{contact.notes}</p>
+                                                                                          ~~~~~
+
+src/pages/Dashboard.tsx:66:25 - error TS2339: Property 'phone' does not exist on type 'Contact'.
+
+66         return contact?.phone || ''
+                           ~~~~~
+
+src/pages/Dashboard.tsx:378:60 - error TS2339: Property 'phone' does not exist on type 'Contact'.
+
+378                                   {contact.name} ({contact.phone})
+                                                               ~~~~~
+
+src/pages/TemplatesPage.tsx:61:51 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+61     return selectedCategory === 'all' || template.category === selectedCategory
+                                                     ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:65:59 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+65   const usedCategories = [...new Set(templates.map(t => t.category))]
+                                                             ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:114:26 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+114       category: template.category,
+                             ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:220:53 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+220               const count = templates.filter(t => t.category === category).length
+                                                        ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:363:147 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+363                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${getCategoryColor(previewTemplate.category)}-100 text-${getCategoryColor(previewTemplate.category)}-800 mt-1`}>
+                                                                                                                                                      ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:363:202 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+363                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${getCategoryColor(previewTemplate.category)}-100 text-${getCategoryColor(previewTemplate.category)}-800 mt-1`}>
+                                                                                                                                                                                                             ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:364:71 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+364                     {categories.find(c => c.value === previewTemplate.category)?.label || previewTemplate.category}
+                                                                          ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:364:107 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+364                     {categories.find(c => c.value === previewTemplate.category)?.label || previewTemplate.category}
+                                                                                                              ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:438:142 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+438                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${getCategoryColor(template.category)}-100 text-${getCategoryColor(template.category)}-800`}>
+                                                                                                                                                 ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:438:190 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+438                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${getCategoryColor(template.category)}-100 text-${getCategoryColor(template.category)}-800`}>
+                                                                                                                                                                                                 ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:439:66 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+439                       {categories.find(c => c.value === template.category)?.label || template.category}
+                                                                     ~~~~~~~~
+
+src/pages/TemplatesPage.tsx:439:95 - error TS2339: Property 'category' does not exist on type 'MessageTemplate'.
+
+439                       {categories.find(c => c.value === template.category)?.label || template.category}
+                                                                                                  ~~~~~~~~
+
+
+Found 31 errors.
+

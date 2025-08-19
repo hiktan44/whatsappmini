@@ -6,6 +6,9 @@ import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Landing from './pages/Landing'
+import ContactsPage from './pages/ContactsPage'
+import TemplatesPage from './pages/TemplatesPage'
+import MediaPage from './pages/MediaPage'
 import LoadingSpinner from './components/LoadingSpinner'
 
 const AppRoutes: React.FC = () => {
@@ -21,6 +24,9 @@ const AppRoutes: React.FC = () => {
       <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+      <Route path="/contacts" element={user ? <ContactsPage /> : <Navigate to="/login" />} />
+      <Route path="/templates" element={user ? <TemplatesPage /> : <Navigate to="/login" />} />
+      <Route path="/media" element={user ? <MediaPage /> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )

@@ -1,12 +1,11 @@
 CREATE TABLE media_files (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    file_type VARCHAR(50) NOT NULL,
-    file_url TEXT NOT NULL,
-    file_size BIGINT NOT NULL,
-    mime_type VARCHAR(100),
-    thumbnail_url TEXT,
-    is_compressed BOOLEAN DEFAULT false,
-    created_at TIMESTAMP DEFAULT now()
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
+    filename text NOT NULL,
+    file_path text NOT NULL,
+    file_type text NOT NULL,
+    file_size bigint NOT NULL,
+    mime_type text,
+    is_active boolean DEFAULT true,
+    created_at timestamptz DEFAULT now()
 );
