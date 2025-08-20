@@ -1,11 +1,10 @@
 CREATE TABLE message_templates (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id uuid NOT NULL,
-    template_name text NOT NULL,
-    content text NOT NULL,
-    category text DEFAULT 'general',
-    variables jsonb DEFAULT '[]'::jsonb,
-    is_active boolean DEFAULT true,
-    created_at timestamptz DEFAULT now(),
-    updated_at timestamptz DEFAULT now()
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    template_name TEXT NOT NULL,
+    content TEXT NOT NULL,
+    category TEXT DEFAULT 'general',
+    variables TEXT[],
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
