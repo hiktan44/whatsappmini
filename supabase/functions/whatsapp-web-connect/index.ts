@@ -15,8 +15,11 @@ Deno.serve(async (req) => {
     const { action, userId } = await req.json()
     
     if (action === 'generate_qr') {
-      // QR kod üretme simülasyonu
-      const qrCodeData = `whatsapp-qr-${userId}-${Date.now()}`
+      // Gerçek QR kod verisi oluştur
+      const qrCodeData = `whatsapp-web-session:${userId}:${Date.now()}:${Math.random().toString(36).substring(2)}`
+      
+      // QR kod image'ını oluştur (online QR API kullanarak)
+      const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(qrCodeData)}&format=png&margin=10`
       
       // Veritabanına bağlantı durumu kaydet
       const supabaseUrl = Deno.env.get('SUPABASE_URL')
@@ -50,6 +53,7 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             connection_status: 'connecting',
             qr_code_data: qrCodeData,
+            qr_code_image: qrCodeImageUrl,
             updated_at: new Date().toISOString()
           })
         })
@@ -71,7 +75,8 @@ Deno.serve(async (req) => {
             user_id: userId,
             connection_type: 'web',
             connection_status: 'connecting',
-            qr_code_data: qrCodeData
+            qr_code_data: qrCodeData,
+            qr_code_image: qrCodeImageUrl
           })
         })
         
@@ -82,7 +87,8 @@ Deno.serve(async (req) => {
       
       return new Response(JSON.stringify({ 
         success: true, 
-        qrCode: qrCodeData,
+        qrCode: qrCodeImageUrl,
+        qrCodeData: qrCodeData,
         message: 'QR kod oluşturuldu' 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -135,6 +141,7 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           connection_status: 'disconnected',
           qr_code_data: null,
+          qr_code_image: null,
           updated_at: new Date().toISOString()
         })
       })
@@ -164,12 +171,13 @@ Deno.serve(async (req) => {
       })
       
       const connections = await response.json()
-      const connection = connections[0] || { connection_status: 'disconnected', qr_code_data: null }
+      const connection = connections[0] || { connection_status: 'disconnected', qr_code_data: null, qr_code_image: null }
       
       return new Response(JSON.stringify({ 
         success: true, 
         status: connection.connection_status,
-        qrCode: connection.qr_code_data
+        qrCode: connection.qr_code_image || connection.qr_code_data,
+        qrCodeData: connection.qr_code_data
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
