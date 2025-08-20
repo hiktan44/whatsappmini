@@ -1,10 +1,11 @@
 CREATE TABLE custom_variables (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    variable_name TEXT NOT NULL,
-    variable_value TEXT NOT NULL,
-    description TEXT,
-    is_global BOOLEAN DEFAULT false,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id uuid NOT NULL,
+    name text NOT NULL,
+    value text NOT NULL,
+    description text,
+    category text DEFAULT 'general',
+    is_active boolean DEFAULT true,
+    created_at timestamptz DEFAULT now(),
+    updated_at timestamptz DEFAULT now()
 );

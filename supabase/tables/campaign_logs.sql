@@ -1,12 +1,16 @@
 CREATE TABLE campaign_logs (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    campaign_id UUID NOT NULL,
-    contact_id UUID NOT NULL,
-    phone_number VARCHAR(20) NOT NULL,
-    message_content TEXT NOT NULL,
-    status VARCHAR(50) DEFAULT 'pending',
-    sent_at TIMESTAMP,
-    error_message TEXT,
-    retry_count INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT now()
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id uuid NOT NULL,
+    contact_id uuid NOT NULL,
+    status text DEFAULT 'pending' CHECK (status IN ('pending',
+    'sent',
+    'delivered',
+    'failed',
+    'read')),
+    message_content text,
+    sent_at timestamptz,
+    delivered_at timestamptz,
+    read_at timestamptz,
+    error_message text,
+    created_at timestamptz DEFAULT now()
 );

@@ -8,6 +8,7 @@ CREATE TABLE whatsapp_connections (
     'connecting',
     'error')),
     qr_code_data text,
+    qr_code_image text,
     session_data jsonb,
     api_credentials jsonb,
     last_connected_at timestamptz,
