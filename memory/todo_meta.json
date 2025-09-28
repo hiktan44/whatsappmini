@@ -11,8 +11,8 @@
       "2": {
         "id": "2",
         "content": "React uygulaması geliştirme (Vercel için optimize)",
-        "details": "- Modern React/TypeScript uygulaması\n- Vercel deployment için optimize edilmiş yapı\n- Responsive tasarım ve Türkçe arayüz\n- Tüm WhatsApp özellikleri: Kişi yönetimi, Şablon sistemi, Medya desteği, Değişken sistemi\n- WhatsApp Web QR kod bağlantısı\n- WhatsApp Business API desteği",
-        "status": "in_progress",
+        "details": "**ACİL DÜZELTME GEREKİYOR:**\n- WhatsApp Web QR kod edge function tamamen bozuk (500 error)\n- Edge function'ları yeniden implement et\n- QR kod generation sistemini düzelt\n- Frontend-backend entegrasyonunu onar\n- WhatsApp Web bağlantısını test et\n\n**MEVCUT ÇALIŞAN ÖZELLİKLER:**\n- Authentication sistemi ✅\n- Kişi yönetimi ✅ \n- Şablon sistemi ✅\n- Medya upload ✅\n- Responsive tasarım ✅",
+        "status": "pending",
         "priority": "high"
       },
       "3": {
