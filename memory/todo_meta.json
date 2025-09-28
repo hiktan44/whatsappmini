@@ -5,7 +5,7 @@
         "id": "1",
         "content": "Yeni Supabase projesi oluşturma ve backend kurulumu",
         "details": "- Yeni Supabase projesi için auth bilgileri alma\n- Database tablolarını oluşturma (contacts, message_templates, custom_variables, media_files)\n- Row Level Security (RLS) politikalarını doğru şekilde ayarlama\n- Edge Functions geliştirme (WhatsApp Web QR, Business API, setup-default-data)\n- Storage bucket kurulumu",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "2": {
