@@ -1,11 +1,8 @@
 CREATE TABLE custom_variables (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id uuid NOT NULL,
-    name text NOT NULL,
-    value text NOT NULL,
-    description text,
-    category text DEFAULT 'general',
-    is_active boolean DEFAULT true,
-    created_at timestamptz DEFAULT now(),
-    updated_at timestamptz DEFAULT now()
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    variable_name TEXT NOT NULL,
+    variable_value TEXT NOT NULL,
+    description TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW()
 );

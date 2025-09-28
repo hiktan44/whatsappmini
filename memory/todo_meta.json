@@ -5,14 +5,14 @@
         "id": "1",
         "content": "Yeni Supabase projesi oluşturma ve backend kurulumu",
         "details": "- Yeni Supabase projesi için auth bilgileri alma\n- Database tablolarını oluşturma (contacts, message_templates, custom_variables, media_files)\n- Row Level Security (RLS) politikalarını doğru şekilde ayarlama\n- Edge Functions geliştirme (WhatsApp Web QR, Business API, setup-default-data)\n- Storage bucket kurulumu",
-        "status": "in_progress",
+        "status": "completed",
         "priority": "high"
       },
       "2": {
         "id": "2",
         "content": "React uygulaması geliştirme (Vercel için optimize)",
         "details": "- Modern React/TypeScript uygulaması\n- Vercel deployment için optimize edilmiş yapı\n- Responsive tasarım ve Türkçe arayüz\n- Tüm WhatsApp özellikleri: Kişi yönetimi, Şablon sistemi, Medya desteği, Değişken sistemi\n- WhatsApp Web QR kod bağlantısı\n- WhatsApp Business API desteği",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "3": {

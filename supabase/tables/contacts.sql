@@ -1,14 +1,11 @@
 CREATE TABLE contacts (
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id uuid NOT NULL,
-    name text NOT NULL,
-    phone_number text NOT NULL,
-    email text,
-    notes text,
-    tags text[] DEFAULT '{}',
-    avatar_url text,
-    last_contacted_at timestamptz,
-    is_favorite boolean DEFAULT false,
-    created_at timestamptz DEFAULT now(),
-    updated_at timestamptz DEFAULT now()
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    email TEXT,
+    group_name TEXT DEFAULT 'Genel',
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
 );
