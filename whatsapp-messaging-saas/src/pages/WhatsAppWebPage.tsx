@@ -1,21 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase, Contact, MessageTemplate, MediaFile } from '@/lib/supabase'
+import QRCode from 'qrcode'
 import {
-  Smartphone,
   QrCode,
   RefreshCw,
   Send,
   Users,
   FileText,
   Image as ImageIcon,
-  Plus,
   X,
   CheckCircle,
   AlertCircle,
-  Loader2,
-  MessageCircle
+  Loader2
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -33,6 +31,7 @@ export function WhatsAppWebPage() {
     qrCode?: string
     lastConnected?: string
   }>({ isConnected: false })
+  const qrCanvasRef = useRef<HTMLCanvasElement>(null)
   const [loading, setLoading] = useState(true)
   const [qrLoading, setQrLoading] = useState(false)
   const [sendingMessage, setSendingMessage] = useState(false)
@@ -113,7 +112,31 @@ export function WhatsAppWebPage() {
           ...prev,
           qrCode: data.data.qr_code
         }))
+        
+        // Generate visual QR code
+        if (qrCanvasRef.current && data.data.qr_code) {
+          try {
+            await QRCode.toCanvas(qrCanvasRef.current, data.data.qr_code, {
+              width: 256,
+              margin: 2,
+              color: {
+                dark: '#000000',
+                light: '#FFFFFF'
+              }
+            })
+          } catch (qrError) {
+            console.error('Error generating QR code image:', qrError)
+          }
+        }
+        
         toast.success('QR kod oluşturuldu!')
+        
+        // Auto-refresh QR code every 60 seconds
+        setTimeout(() => {
+          if (!connectionStatus.isConnected) {
+            generateQRCode()
+          }
+        }, 60000)
       }
     } catch (error: any) {
       toast.error('QR kod oluşturulurken hata oluştu')
@@ -140,6 +163,26 @@ export function WhatsAppWebPage() {
     } catch (error: any) {
       toast.error('Bağlantı kesilirken hata oluştu')
       console.error('Error disconnecting:', error)
+    }
+  }
+
+  const simulateConnection = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('whatsapp-web-connect', {
+        body: { action: 'connect' }
+      })
+
+      if (error) throw error
+
+      setConnectionStatus({
+        isConnected: true,
+        qrCode: undefined,
+        lastConnected: new Date().toISOString()
+      })
+      toast.success('WhatsApp Web başarıyla bağlandı!')
+    } catch (error: any) {
+      toast.error('Bağlantı simülasyonu başarısız')
+      console.error('Error simulating connection:', error)
     }
   }
 
@@ -282,41 +325,90 @@ export function WhatsAppWebPage() {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={generateQRCode}
-                disabled={qrLoading}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
-              >
-                {qrLoading ? (
-                  <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
-                ) : (
-                  <QrCode className="-ml-1 mr-2 h-4 w-4" />
-                )}
-                QR Kod Oluştur
-              </button>
+              <div className="space-x-3">
+                <button
+                  onClick={generateQRCode}
+                  disabled={qrLoading}
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+                >
+                  {qrLoading ? (
+                    <Loader2 className="animate-spin -ml-1 mr-2 h-4 w-4" />
+                  ) : (
+                    <QrCode className="-ml-1 mr-2 h-4 w-4" />
+                  )}
+                  QR Kod Oluştur
+                </button>
+                <button
+                  onClick={checkConnectionStatus}
+                  className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                >
+                  <RefreshCw className="-ml-1 mr-2 h-4 w-4" />
+                  Durumu Kontrol Et
+                </button>
+              </div>
             )}
           </div>
 
           {/* QR Code Display */}
           {!connectionStatus.isConnected && connectionStatus.qrCode && (
             <div className="text-center py-8">
-              <div className="inline-block p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg">
-                {/* In a real implementation, you would generate and display an actual QR code */}
-                <div className="w-64 h-64 bg-gray-100 flex items-center justify-center rounded-lg">
-                  <div className="text-center">
-                    <QrCode className="mx-auto h-16 w-16 text-gray-400 mb-4" />
-                    <p className="text-sm text-gray-500">
-                      QR Kod Burada Görünecek
-                    </p>
-                    <p className="text-xs text-gray-400 mt-2">
-                      Kod: {connectionStatus.qrCode}
-                    </p>
-                  </div>
+              <div className="inline-block p-6 bg-white border-2 border-gray-200 rounded-xl shadow-lg">
+                <div className="mb-4">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                    WhatsApp Web QR Kod
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Bu kodu WhatsApp uygulamanız ile tarayın
+                  </p>
                 </div>
+                
+                <div className="flex justify-center mb-4">
+                  <canvas 
+                    ref={qrCanvasRef} 
+                    className="border border-gray-200 rounded-lg"
+                  />
+                </div>
+                
+                <div className="text-center">
+                  <p className="text-xs text-gray-500 mb-3">
+                    QR kod 1 dakika sonra yenilenecek
+                  </p>
+                  <button
+                    onClick={generateQRCode}
+                    disabled={qrLoading}
+                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    {qrLoading ? (
+                      <Loader2 className="animate-spin h-3 w-3 mr-1" />
+                    ) : (
+                      <RefreshCw className="h-3 w-3 mr-1" />
+                    )}
+                    Yenile
+                  </button>
+                </div>
+                
+                <p className="text-xs text-gray-400 mt-3 font-mono break-all">
+                  ID: {connectionStatus.qrCode.slice(0, 20)}...
+                </p>
               </div>
+              
               <p className="mt-4 text-sm text-gray-600">
                 WhatsApp uygulamanızı açın, Menü {'>'} Bağlı Cihazlar {'>'} Cihaz Bağla seçeneğine gidin ve bu QR kodu tarayın.
               </p>
+              
+              {/* Test/Demo Connection Button */}
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-xs text-gray-500 mb-2">
+                  Demo amaçlı test bağlantısı:
+                </p>
+                <button
+                  onClick={() => simulateConnection()}
+                  className="inline-flex items-center px-3 py-1.5 border border-green-300 shadow-sm text-xs font-medium rounded text-green-700 bg-green-50 hover:bg-green-100"
+                >
+                  <CheckCircle className="h-3 w-3 mr-1" />
+                  Test Bağlantısı Simüle Et
+                </button>
+              </div>
             </div>
           )}
 
@@ -494,93 +586,57 @@ function MessageModal({
           </button>
         </div>
 
-        <form onSubmit={onSend} className="space-y-6">
+        <form onSubmit={onSend} className="space-y-4">
           {/* Contact Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Alıcılar ({selectedContacts.length} kişi seçildi)
+              Kişiler ({selectedContacts.length} seçili)
             </label>
-            <div className="border border-gray-300 rounded-md">
-              <div className="p-3 border-b border-gray-200 bg-gray-50">
-                <div className="flex justify-between items-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowContactList(!showContactList)}
-                    className="text-sm text-blue-600 hover:text-blue-800"
-                  >
-                    {showContactList ? 'Listeyi Gizle' : 'Kişi Listesini Göster'}
-                  </button>
-                  <div className="space-x-2">
-                    <button
-                      type="button"
-                      onClick={selectAllContacts}
-                      className="text-sm text-green-600 hover:text-green-800"
-                    >
-                      Tümünü Seç
-                    </button>
-                    <button
-                      type="button"
-                      onClick={clearSelection}
-                      className="text-sm text-red-600 hover:text-red-800"
-                    >
-                      Temizle
-                    </button>
-                  </div>
-                </div>
+            <div className="space-y-2">
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={selectAllContacts}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Tümünü Seç
+                </button>
+                <button
+                  type="button"
+                  onClick={clearSelection}
+                  className="text-sm text-red-600 hover:text-red-800"
+                >
+                  Seçimi Temizle
+                </button>
               </div>
-              
-              {showContactList && (
-                <div className="max-h-48 overflow-y-auto p-3">
-                  <div className="space-y-2">
-                    {contacts.map(contact => (
-                      <label key={contact.id} className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 p-2 rounded">
-                        <input
-                          type="checkbox"
-                          checked={selectedContacts.includes(contact.id)}
-                          onChange={() => toggleContact(contact.id)}
-                          className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                        />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">{contact.name}</p>
-                          <p className="text-xs text-gray-500">{contact.phone}</p>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
+              <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-md p-2">
+                {contacts.map((contact) => (
+                  <label key={contact.id} className="flex items-center space-x-2 p-2 hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      checked={selectedContacts.includes(contact.id)}
+                      onChange={() => toggleContact(contact.id)}
+                      className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-gray-900">{contact.name}</span>
+                    <span className="text-sm text-gray-500">({contact.phone})</span>
+                  </label>
+                ))}
+              </div>
             </div>
-            
-            {selectedContacts.length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-1">
-                {selectedContacts.slice(0, 5).map(contactId => {
-                  const contact = contacts.find(c => c.id === contactId)
-                  return contact ? (
-                    <span key={contactId} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800">
-                      {contact.name}
-                    </span>
-                  ) : null
-                })}
-                {selectedContacts.length > 5 && (
-                  <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                    +{selectedContacts.length - 5} diğeri
-                  </span>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Template Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Şablon Seç (Opsiyonel)
+              Mesaj Şablonu (İsteğe Bağlı)
             </label>
             <select
               {...register('templateId')}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              <option value="">Özel mesaj yaz</option>
-              {templates.map(template => (
+              <option value="">Şablon seçin...</option>
+              {templates.map((template) => (
                 <option key={template.id} value={template.id}>
                   {template.name} ({template.category})
                 </option>
@@ -594,28 +650,20 @@ function MessageModal({
               Mesaj İçeriği
             </label>
             <textarea
-              {...register('customMessage', { required: 'Mesaj içeriği gereklidir' })}
+              {...register('customMessage', { required: true })}
               rows={6}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
-              placeholder="Mesajınızı buraya yazın..."
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Mesajınızı yazın..."
             />
-            
-            {selectedTemplate && selectedTemplate.variables?.length > 0 && (
-              <div className="mt-2">
-                <p className="text-xs text-gray-500 mb-1">Kullanılabilir değişkenler:</p>
-                <div className="flex flex-wrap gap-1">
-                  {selectedTemplate.variables.map((variable, index) => (
-                    <span key={index} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                      {variable}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            {selectedTemplate && (
+              <p className="mt-1 text-sm text-gray-500">
+                Değişkenler: {selectedTemplate.variables?.join(', ')}
+              </p>
             )}
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end space-x-3 pt-4 border-t">
+          {/* Submit Button */}
+          <div className="flex justify-end space-x-3 pt-4">
             <button
               type="button"
               onClick={onClose}
@@ -636,7 +684,7 @@ function MessageModal({
               ) : (
                 <>
                   <Send className="-ml-1 mr-2 h-4 w-4" />
-                  Mesaj Gönder ({selectedContacts.length})
+                  Mesaj Gönder
                 </>
               )}
             </button>

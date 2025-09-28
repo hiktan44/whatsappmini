@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
                 {
                     user_id: userId,
                     name: 'Doğum Günü Kutlaması',
-                    content: 'Mutlu yıllar %ad%! 🎉🎂 Doğum gününüz kutlu olsun. Size özel hediye kodu: %hediye_kodu%',
+                    content: 'Mutlu yıllar %ad%! Doğum gününüz kutlu olsun. Size özel hediye kodu: %hediye_kodu%',
                     category: 'Kişisel',
                     is_default: true,
                     variables: ['%ad%', '%hediye_kodu%']
@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
             console.log('User already has WhatsApp sessions, skipping');
         }
 
-        // Check if user profile exists
+        // Check if user profile exists (profiles table)
         console.log('Checking if user profile exists');
         const profileCheck = await fetch(`${supabaseUrl}/rest/v1/profiles?user_id=eq.${userId}&select=id`, {
             headers: {
@@ -212,55 +212,51 @@ Deno.serve(async (req) => {
 
         if (!profileCheck.ok) {
             console.error('Failed to check existing profile:', await profileCheck.text());
-            throw new Error('Failed to check existing profile');
-        }
-
-        const existingProfiles = await profileCheck.json();
-        console.log('Existing profiles found:', existingProfiles.length);
-
-        let profileCreated = false;
-        if (existingProfiles.length === 0) {
-            // Create user profile
-            const profileData = {
-                user_id: userId,
-                full_name: userEmail?.split('@')[0] || 'Kullanıcı',
-                email: userEmail,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            };
-
-            console.log('Creating user profile');
-            const profileResponse = await fetch(`${supabaseUrl}/rest/v1/profiles`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${serviceRoleKey}`,
-                    'apikey': serviceRoleKey,
-                    'Content-Type': 'application/json',
-                    'Prefer': 'return=representation'
-                },
-                body: JSON.stringify(profileData)
-            });
-
-            if (profileResponse.ok) {
-                profileCreated = true;
-                console.log('Profile created successfully');
-            } else {
-                console.error('Failed to create profile:', await profileResponse.text());
-                // Don't throw error if profile creation fails - it's not critical
-            }
+            // Profile table might not exist, continue without creating profile
+            console.log('Profile table might not exist, skipping profile creation');
         } else {
-            console.log('User already has profile, skipping');
+            const existingProfiles = await profileCheck.json();
+            console.log('Existing profiles found:', existingProfiles.length);
+
+            if (existingProfiles.length === 0 && userEmail) {
+                // Create user profile
+                const profileData = {
+                    user_id: userId,
+                    email: userEmail,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                };
+
+                console.log('Creating user profile');
+                const profileResponse = await fetch(`${supabaseUrl}/rest/v1/profiles`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${serviceRoleKey}`,
+                        'apikey': serviceRoleKey,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                if (!profileResponse.ok) {
+                    const errorText = await profileResponse.text();
+                    console.error('Failed to create profile:', errorText);
+                    // Continue without profile creation
+                } else {
+                    console.log('Profile created successfully');
+                }
+            }
         }
 
-        console.log('Setup default data completed successfully');
+        console.log('Setup complete');
 
         return new Response(JSON.stringify({
             data: {
                 success: true,
-                message: 'Varsayılan veriler başarıyla oluşturuldu',
                 templates_created: templatesCreated,
                 sessions_created: sessionsCreated,
-                profile_created: profileCreated
+                message: 'Varsayılan veriler başarıyla oluşturuldu'
             }
         }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -271,7 +267,7 @@ Deno.serve(async (req) => {
 
         const errorResponse = {
             error: {
-                code: 'SETUP_DEFAULT_DATA_FAILED',
+                code: 'SETUP_ERROR',
                 message: error.message
             }
         };

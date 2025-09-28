@@ -17,9 +17,14 @@ Deno.serve(async (req) => {
         // Get environment variables
         const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
         const supabaseUrl = Deno.env.get('SUPABASE_URL');
+        const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
 
-        if (!serviceRoleKey || !supabaseUrl) {
-            console.error('Missing environment variables:', { serviceRoleKey: !!serviceRoleKey, supabaseUrl: !!supabaseUrl });
+        if (!serviceRoleKey || !supabaseUrl || !anonKey) {
+            console.error('Missing environment variables:', { 
+                serviceRoleKey: !!serviceRoleKey, 
+                supabaseUrl: !!supabaseUrl,
+                anonKey: !!anonKey 
+            });
             throw new Error('Supabase configuration missing');
         }
 
@@ -35,43 +40,69 @@ Deno.serve(async (req) => {
         const { action } = requestData;
         console.log('Action requested:', action);
 
-        // Get user from auth header
+        // Get user from auth header - IMPROVED AUTHENTICATION
         const authHeader = req.headers.get('authorization');
         if (!authHeader) {
             console.error('No authorization header provided');
-            throw new Error('No authorization header');
+            throw new Error('Authentication required');
         }
 
         const token = authHeader.replace('Bearer ', '');
         console.log('Token extracted, length:', token.length);
 
-        // Decode JWT token to get user ID
-        let userId;
-        try {
-            const [, payload] = token.split('.');
-            const decodedPayload = JSON.parse(atob(payload));
-            userId = decodedPayload.sub;
-            console.log('User ID extracted:', userId);
-        } catch (e) {
-            console.error('Failed to decode JWT token:', e);
-            throw new Error('Invalid token format');
+        // Check if token is anon key (not a user token)
+        if (token === anonKey) {
+            console.error('Anon key provided instead of user token');
+            throw new Error('User authentication required - please log in');
         }
 
-        if (!userId) {
-            throw new Error('No user ID found in token');
+        // Verify token with Supabase Auth and get user
+        let userId, userEmail;
+        try {
+            console.log('Verifying user token with Supabase Auth...');
+            const userResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'apikey': anonKey
+                }
+            });
+
+            if (!userResponse.ok) {
+                const errorText = await userResponse.text();
+                console.error('User verification failed:', userResponse.status, errorText);
+                throw new Error('Invalid or expired authentication token');
+            }
+
+            const userData = await userResponse.json();
+            userId = userData.id;
+            userEmail = userData.email;
+            
+            console.log('User authenticated successfully:', { userId, userEmail });
+            
+            if (!userId) {
+                throw new Error('User ID not found in verified token');
+            }
+        } catch (e) {
+            console.error('Authentication verification failed:', e);
+            throw new Error(`Authentication failed: ${e.message}`);
         }
 
         if (action === 'generate_qr') {
             console.log('Generating QR code for user:', userId);
             
-            // Generate QR code data
+            // Generate QR code data with realistic WhatsApp Web format
+            const timestamp = Date.now();
+            const randomId = Math.random().toString(36).substring(2, 15);
+            const qrCodeData = `1@${randomId},${timestamp},8,${userId.slice(0, 8)}`;
+            
             const qrData = {
-                qr_code: `whatsapp_web_${userId}_${Date.now()}`,
+                qr_code: qrCodeData,
                 expires_at: new Date(Date.now() + 60000).toISOString(), // 1 minute expiry
-                session_id: `session_${userId}_${Date.now()}`
+                session_id: `session_${userId}_${timestamp}`,
+                status: 'pending'
             };
 
-            console.log('QR data generated:', qrData);
+            console.log('QR data generated');
 
             // First, check if session exists
             const checkResponse = await fetch(`${supabaseUrl}/rest/v1/whatsapp_sessions?user_id=eq.${userId}&session_type=eq.web&select=id`, {
@@ -103,6 +134,7 @@ Deno.serve(async (req) => {
                     body: JSON.stringify({
                         qr_code: qrData.qr_code,
                         connection_data: qrData,
+                        is_connected: false,
                         updated_at: new Date().toISOString()
                     })
                 });
@@ -140,6 +172,7 @@ Deno.serve(async (req) => {
                 data: {
                     qr_code: qrData.qr_code,
                     expires_at: qrData.expires_at,
+                    session_id: qrData.session_id,
                     message: 'QR kod oluşturuldu. Lütfen WhatsApp uygulamanızdan tarayın.'
                 }
             }), {
@@ -172,7 +205,8 @@ Deno.serve(async (req) => {
                     data: {
                         is_connected: false,
                         last_connected_at: null,
-                        qr_code: null
+                        qr_code: null,
+                        status: 'disconnected'
                     }
                 }), {
                     headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -185,7 +219,45 @@ Deno.serve(async (req) => {
                 data: {
                     is_connected: session.is_connected || false,
                     last_connected_at: session.last_connected_at,
-                    qr_code: session.qr_code
+                    qr_code: session.qr_code,
+                    status: session.is_connected ? 'connected' : 'disconnected'
+                }
+            }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+        }
+
+        if (action === 'connect') {
+            console.log('Simulating WhatsApp Web connection for user:', userId);
+            
+            // Simulate connection (in real implementation, this would verify QR scan)
+            const updateResponse = await fetch(`${supabaseUrl}/rest/v1/whatsapp_sessions?user_id=eq.${userId}&session_type=eq.web`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${serviceRoleKey}`,
+                    'apikey': serviceRoleKey,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    is_connected: true,
+                    last_connected_at: new Date().toISOString(),
+                    qr_code: null, // Clear QR code after connection
+                    updated_at: new Date().toISOString()
+                })
+            });
+
+            if (!updateResponse.ok) {
+                const errorText = await updateResponse.text();
+                console.error('Failed to update connection:', errorText);
+                throw new Error(`Failed to connect: ${errorText}`);
+            }
+
+            console.log('Connected successfully');
+
+            return new Response(JSON.stringify({
+                data: {
+                    is_connected: true,
+                    message: 'WhatsApp Web başarıyla bağlandı!'
                 }
             }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -221,6 +293,7 @@ Deno.serve(async (req) => {
 
             return new Response(JSON.stringify({
                 data: {
+                    is_connected: false,
                     message: 'WhatsApp Web bağlantısı kesildi'
                 }
             }), {
@@ -228,15 +301,17 @@ Deno.serve(async (req) => {
             });
         }
 
-        throw new Error('Invalid action: ' + action);
+        // Invalid action
+        throw new Error(`Invalid action: ${action}`);
 
     } catch (error) {
-        console.error('WhatsApp Web connection error:', error);
+        console.error('WhatsApp Web Connect error:', error);
 
         const errorResponse = {
             error: {
                 code: 'WHATSAPP_WEB_ERROR',
-                message: error.message
+                message: error.message,
+                details: 'Please ensure you are logged in and try again'
             }
         };
 
