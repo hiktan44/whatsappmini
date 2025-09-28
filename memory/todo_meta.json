@@ -3,36 +3,22 @@
     "Coordinator": {
       "1": {
         "id": "1",
-        "content": "UI/UX Navigasyon İyileştirmeleri",
-        "details": "1. Kişiler sekmesine geri dön butonu ekle\n2. Şablonlar sekmesine geri dön butonu ekle\n3. Medya sekmesine geri dön butonu ekle\n4. Genel navigasyon akışını iyileştir",
+        "content": "Yeni Supabase projesi oluşturma ve backend kurulumu",
+        "details": "- Yeni Supabase projesi için auth bilgileri alma\n- Database tablolarını oluşturma (contacts, message_templates, custom_variables, media_files)\n- Row Level Security (RLS) politikalarını doğru şekilde ayarlama\n- Edge Functions geliştirme (WhatsApp Web QR, Business API, setup-default-data)\n- Storage bucket kurulumu",
         "status": "pending",
         "priority": "high"
       },
       "2": {
         "id": "2",
-        "content": "Hazır Şablon Sistemi",
-        "details": "1. Kullanıma hazır mesaj şablonları veritabanına ekle\n2. Şablon kategorileri oluştur (karşılama, bilgilendirme, pazarlama vb.)\n3. Şablon önizleme ve seçim arayüzü geliştir\n4. Dinamik değişkenler ile şablon entegrasyonu",
+        "content": "React uygulaması geliştirme (Vercel için optimize)",
+        "details": "- Modern React/TypeScript uygulaması\n- Vercel deployment için optimize edilmiş yapı\n- Responsive tasarım ve Türkçe arayüz\n- Tüm WhatsApp özellikleri: Kişi yönetimi, Şablon sistemi, Medya desteği, Değişken sistemi\n- WhatsApp Web QR kod bağlantısı\n- WhatsApp Business API desteği",
         "status": "pending",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "WhatsApp Kişi İçe Aktarma",
-        "details": "1. WhatsApp Web bağlantı sistemi oluştur\n2. Kişi listesini otomatik çekme fonksiyonu\n3. Çekilen kişileri veritabanına kaydetme\n4. Kişi listesi güncelleme ve senkronizasyon",
-        "status": "pending",
-        "priority": "high"
-      },
-      "4": {
-        "id": "4",
-        "content": "WhatsApp Web Bağlantı Sistemi",
-        "details": "1. QR kod ile WhatsApp Web bağlantı arayüzü\n2. Bağlantı durumu izleme\n3. Mesaj gönderme fonksiyonu entegrasyonu\n4. Bağlantı kopma durumunda yeniden bağlanma",
-        "status": "pending",
-        "priority": "high"
-      },
-      "5": {
-        "id": "5",
-        "content": "WhatsApp Business API Entegrasyonu",
-        "details": "1. WhatsApp Business API için ayrı sekme/bölüm oluştur\n2. API key yapılandırma arayüzü\n3. Business API üzerinden mesaj gönderme sistemi\n4. API durumu izleme ve raporlama",
+        "content": "Vercel deployment rehberi hazırlama",
+        "details": "- Vercel'e deployment için detaylı adım adım rehber\n- Environment variables ayarlama talimatları\n- Supabase entegrasyonu için gerekli ayarlar\n- Troubleshooting kılavuzu",
         "status": "pending",
         "priority": "medium"
       }
