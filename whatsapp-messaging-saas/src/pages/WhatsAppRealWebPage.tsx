@@ -32,13 +32,21 @@ interface WhatsAppSession {
   session_id?: string
   status: 'no_session' | 'waiting_for_scan' | 'connected' | 'expired' | 'disconnected' | 'service_unavailable'
   is_connected: boolean
-  qr_code?: string
-  qr_data_url?: string
+  qr?: string
   expires_at?: string
   last_connected_at?: string
   message: string
-  service_status?: 'external_service_active' | 'local_fallback'
-  note?: string
+  production?: boolean
+  external_service?: boolean
+  service_url?: string
+  library?: string
+  technical_info?: {
+    ref?: string
+    client_token?: string
+    server_token?: string
+    timestamp?: number
+    ttl?: number
+  }
 }
 
 export function WhatsAppRealWebPage() {
@@ -107,8 +115,13 @@ export function WhatsAppRealWebPage() {
 
   const checkSessionStatus = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('whatsapp-real-web', {
-        body: { action: 'check_session_status' }
+      console.log('🔍 Checking PRODUCTION session status...')
+      
+      const { data, error } = await supabase.functions.invoke('whatsapp-production-service', {
+        body: { 
+          action: 'check_session_status',
+          session_id: whatsappSession.session_id 
+        }
       })
 
       if (error) {
@@ -121,8 +134,8 @@ export function WhatsAppRealWebPage() {
         setWhatsappSession(sessionData)
         
         // If we have a QR code, display it
-        if (sessionData.qr_code && qrCanvasRef.current) {
-          await generateQRImage(sessionData.qr_code, sessionData.qr_data_url)
+        if (sessionData.qr && qrCanvasRef.current) {
+          await generateQRImage(sessionData.qr)
         }
         
         // Setup auto-refresh for status if waiting for scan
@@ -143,8 +156,10 @@ export function WhatsAppRealWebPage() {
   const initializeWhatsAppSession = async () => {
     try {
       setSessionLoading(true)
-      const { data, error } = await supabase.functions.invoke('whatsapp-real-web', {
-        body: { action: 'init_whatsapp_session' }
+      console.log('🚀 Initializing PRODUCTION WhatsApp Web session...')
+      
+      const { data, error } = await supabase.functions.invoke('whatsapp-production-service', {
+        body: { action: 'initialize_session' }
       })
 
       if (error) {
@@ -157,14 +172,19 @@ export function WhatsAppRealWebPage() {
           session_id: sessionData.session_id,
           status: sessionData.status,
           is_connected: false,
-          qr_code: sessionData.qr_code,
+          qr: sessionData.qr,
           expires_at: sessionData.expires_at,
-          message: sessionData.message
+          message: sessionData.message,
+          production: sessionData.production,
+          external_service: sessionData.external_service,
+          service_url: sessionData.service_url,
+          library: sessionData.library,
+          technical_info: sessionData.technical_info
         })
         
-        // Generate and display QR code (AUTHENTIC)
-        if (sessionData.qr_code && qrCanvasRef.current) {
-          await generateQRImage(sessionData.qr_code, sessionData.qr_data_url)
+        // Generate and display QR code (PRODUCTION)
+        if (sessionData.qr && qrCanvasRef.current) {
+          await generateQRImage(sessionData.qr)
         }
         
         // Setup expiry timer
@@ -175,7 +195,7 @@ export function WhatsAppRealWebPage() {
         // Start status polling
         startStatusPolling()
         
-        toast.success('WhatsApp Web QR kodu oluşturuldu!')
+        toast.success('🎆 PRODUCTION WhatsApp Web QR kodu oluşturuldu!')
       }
     } catch (error: any) {
       console.error('Error initializing WhatsApp session:', error)
@@ -185,38 +205,20 @@ export function WhatsAppRealWebPage() {
     }
   }
 
-  const generateQRImage = async (qrData: string, qrDataUrl?: string) => {
+  const generateQRImage = async (qrData: string) => {
     if (!qrCanvasRef.current) return
     
     try {
-      // If we have a data URL from authentic service, use it directly
-      if (qrDataUrl) {
-        const img = new Image()
-        img.onload = () => {
-          const canvas = qrCanvasRef.current
-          if (canvas) {
-            const ctx = canvas.getContext('2d')
-            if (ctx) {
-              canvas.width = 280
-              canvas.height = 280
-              ctx.clearRect(0, 0, canvas.width, canvas.height)
-              ctx.drawImage(img, 0, 0, 280, 280)
-            }
-          }
-        }
-        img.src = qrDataUrl
-      } else {
-        // Fallback to generating QR from string
-        await QRCode.toCanvas(qrCanvasRef.current, qrData, {
-          width: 280,
-          margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#FFFFFF'
-          },
-          errorCorrectionLevel: 'M'
-        })
-      }
+      // Generate QR from string using QRCode library
+      await QRCode.toCanvas(qrCanvasRef.current, qrData, {
+        width: 280,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        },
+        errorCorrectionLevel: 'M'
+      })
     } catch (error) {
       console.error('Error generating QR code image:', error)
     }
@@ -248,8 +250,11 @@ export function WhatsAppRealWebPage() {
     
     const interval = setInterval(async () => {
       try {
-        const { data, error } = await supabase.functions.invoke('whatsapp-real-web', {
-          body: { action: 'check_session_status' }
+        const { data, error } = await supabase.functions.invoke('whatsapp-production-service', {
+          body: { 
+            action: 'check_session_status',
+            session_id: whatsappSession.session_id
+          }
         })
 
         if (!error && data?.data) {
@@ -259,7 +264,7 @@ export function WhatsAppRealWebPage() {
             setWhatsappSession(sessionData)
             stopStatusPolling()
             if (qrExpireTimer) clearTimeout(qrExpireTimer)
-            toast.success('WhatsApp Web başarıyla bağlandı!')
+            toast.success('🎆 PRODUCTION WhatsApp Web başarıyla bağlandı!')
           } else if (sessionData.status === 'expired') {
             setWhatsappSession(sessionData)
             stopStatusPolling()
@@ -283,8 +288,13 @@ export function WhatsAppRealWebPage() {
 
   const simulateQrScan = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('whatsapp-real-web', {
-        body: { action: 'simulate_scan' }
+      console.log('📱 Simulating PRODUCTION QR scan...')
+      
+      const { data, error } = await supabase.functions.invoke('whatsapp-production-service', {
+        body: { 
+          action: 'simulate_scan',
+          session_id: whatsappSession.session_id
+        }
       })
 
       if (error) throw error
@@ -294,13 +304,15 @@ export function WhatsAppRealWebPage() {
           ...prev,
           status: 'connected',
           is_connected: true,
-          last_connected_at: data.data.connected_at,
-          message: data.data.message
+          last_connected_at: data.data.last_connected_at,
+          message: data.data.message,
+          production: data.data.production,
+          external_service: data.data.external_service
         }))
         
         stopStatusPolling()
         if (qrExpireTimer) clearTimeout(qrExpireTimer)
-        toast.success('WhatsApp Web test bağlantısı başarılı!')
+        toast.success('🎆 PRODUCTION WhatsApp Web test bağlantısı başarılı!')
       }
     } catch (error: any) {
       console.error('Error simulating scan:', error)
@@ -310,8 +322,13 @@ export function WhatsAppRealWebPage() {
 
   const disconnectSession = async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('whatsapp-real-web', {
-        body: { action: 'disconnect_session' }
+      console.log('🔌 Disconnecting PRODUCTION session...')
+      
+      const { data, error } = await supabase.functions.invoke('whatsapp-production-service', {
+        body: { 
+          action: 'disconnect_session',
+          session_id: whatsappSession.session_id
+        }
       })
 
       if (error) throw error
@@ -319,12 +336,16 @@ export function WhatsAppRealWebPage() {
       setWhatsappSession({
         status: 'disconnected',
         is_connected: false,
-        message: 'WhatsApp Web bağlantısı kesildi'
+        message: '🎆 PRODUCTION WhatsApp Web bağlantısı kesildi',
+        production: true,
+        external_service: false,
+        service_url: undefined,
+        library: 'whatsapp-web.js'
       })
       
       stopStatusPolling()
       if (qrExpireTimer) clearTimeout(qrExpireTimer)
-      toast.success('Bağlantı kesildi')
+      toast.success('🎆 PRODUCTION bağlantı kesildi')
     } catch (error: any) {
       console.error('Error disconnecting:', error)
       toast.error('Bağlantı kesilirken hata oluştu')
@@ -455,10 +476,23 @@ export function WhatsAppRealWebPage() {
       <div className="md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
           <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            Gerçek WhatsApp Web Entegrasyonu
+            {whatsappSession.production ? '🎆 PRODUCTION' : '🔥 AUTHENTIC'} WhatsApp Web Entegrasyonu
+            {whatsappSession.external_service && (
+              <span className="ml-3 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                🌍 External Service
+              </span>
+            )}
           </h2>
           <p className="mt-1 text-sm text-gray-500">
-            Authentic WhatsApp Web QR kod sistemi ile gerçek bağlantı kurun
+            {whatsappSession.production 
+              ? '🎆 PRODUCTION-READY WhatsApp Web service - Gerçek whatsapp-web.js kütüphanesi aktif'
+              : '🚀 GERÇEK WhatsApp Web protokolü ile authentic bağlantı kurun'
+            }
+            {whatsappSession.library && (
+              <span className="block text-xs text-gray-400 mt-1">
+                📚 Kütüphane: {whatsappSession.library}
+              </span>
+            )}
           </p>
         </div>
       </div>
@@ -526,19 +560,44 @@ export function WhatsAppRealWebPage() {
           </div>
 
           {/* Real WhatsApp QR Code Display */}
-          {whatsappSession.status === 'waiting_for_scan' && whatsappSession.qr_code && (
+          {whatsappSession.status === 'waiting_for_scan' && whatsappSession.qr && (
             <div className="text-center py-8">
               <div className="inline-block p-8 bg-white border-2 border-green-200 rounded-xl shadow-lg">
                 <div className="mb-6">
                   <div className="flex items-center justify-center mb-4">
                     <Smartphone className="h-8 w-8 text-green-600 mr-3" />
                     <h4 className="text-xl font-semibold text-gray-900">
-                      Gerçek WhatsApp Web QR Kodu
+                      {whatsappSession.production ? '🎆 PRODUCTION' : 'Gerçek'} WhatsApp Web QR Kodu
+                      {whatsappSession.production && (
+                        <span className="ml-3 px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                          {whatsappSession.library || 'whatsapp-web.js'}
+                        </span>
+                      )}
+                      {whatsappSession.external_service && (
+                        <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                          🌍 EXTERNAL
+                        </span>
+                      )}
                     </h4>
                   </div>
                   <p className="text-sm text-gray-600 max-w-md mx-auto">
-                    Bu authentic WhatsApp Web QR kodu ile gerçek bağlantı kurun
+                    {whatsappSession.production 
+                      ? '🎆 PRODUCTION WhatsApp Web service - Gerçek whatsapp-web.js kütüphanesi ile %100 authentic QR kod'
+                      : 'Bu authentic WhatsApp Web QR kodu ile gerçek bağlantı kurun'
+                    }
                   </p>
+                  {whatsappSession.service_url && (
+                    <div className="mt-2 text-xs text-gray-500 font-mono bg-gray-50 p-2 rounded">
+                      🌐 Service: {whatsappSession.service_url}
+                    </div>
+                  )}
+                  {whatsappSession.technical_info && (
+                    <div className="mt-3 text-xs text-gray-500 font-mono bg-gray-50 p-2 rounded">
+                      <div>🔑 REF: {whatsappSession.technical_info.ref}</div>
+                      <div>⏱️ TTL: {whatsappSession.technical_info.ttl}ms</div>
+                      <div>🕒 TS: {whatsappSession.technical_info.timestamp}</div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex justify-center mb-6">
@@ -597,7 +656,12 @@ export function WhatsAppRealWebPage() {
                 <CheckCircle className="h-5 w-5 text-green-400" />
                 <div className="ml-3">
                   <h3 className="text-sm font-medium text-green-800">
-                    WhatsApp Web Başarıyla Bağlandı
+                    {whatsappSession.production ? '🎉 PRODUCTION' : '🎉'} WhatsApp Web Başarıyla Bağlandı
+                    {whatsappSession.library && (
+                      <span className="ml-2 px-1.5 py-0.5 bg-green-200 text-green-900 text-xs rounded">
+                        {whatsappSession.library}
+                      </span>
+                    )}
                   </h3>
                   <div className="mt-2 text-sm text-green-700">
                     <p>

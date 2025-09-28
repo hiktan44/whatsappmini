@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "https://deno.land/x/supabase/": "https://deno.land/x/supabase@1.0.0/"
+  }
+}
