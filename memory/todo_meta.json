@@ -5,7 +5,7 @@
         "id": "1",
         "content": "WhatsApp Web gerçek QR kod sistemi implementasyonu",
         "details": "**PROBLEM:**\n- Mevcut QR kod WhatsApp tarafından kabul edilmiyor\n- Sistem sadece demo/test QR kodu oluşturuyor\n- Gerçek WhatsApp Web entegrasyonu eksik\n\n**ÇÖZÜM REQUIREMENTLERİ:**\n- whatsapp-web.js library entegrasyonu\n- Gerçek WhatsApp Web session management\n- Authentic QR kod generation\n- Real-time connection status\n- Proper WhatsApp Web API implementasyonu",
-        "status": "pending",
+        "status": "in_progress",
         "priority": "high"
       },
       "2": {

@@ -11,6 +11,7 @@ import { ContactsPage } from '@/pages/ContactsPage'
 import { TemplatesPage } from '@/pages/TemplatesPage'
 import { MediaPage } from '@/pages/MediaPage'
 import { WhatsAppWebPage } from '@/pages/WhatsAppWebPage'
+import { WhatsAppRealWebPage } from '@/pages/WhatsAppRealWebPage'
 import { WhatsAppAPIPage } from '@/pages/WhatsAppAPIPage'
 import { SettingsPage } from '@/pages/SettingsPage'
 
@@ -36,6 +37,7 @@ function App() {
               <Route path="templates" element={<TemplatesPage />} />
               <Route path="media" element={<MediaPage />} />
               <Route path="whatsapp/web" element={<WhatsAppWebPage />} />
+              <Route path="whatsapp/real-web" element={<WhatsAppRealWebPage />} />
               <Route path="whatsapp/api" element={<WhatsAppAPIPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
