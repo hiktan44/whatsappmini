@@ -438,7 +438,7 @@ export class ApiService {
 
   // WhatsApp Web Connection
   static async callWhatsAppWebConnect(payload: {
-    action: 'generate_qr' | 'connect' | 'disconnect' | 'status' | 'import_contacts',
+    action: 'generate_qr' | 'connect' | 'disconnect' | 'check_connection' | 'import_contacts',
     userId: string
   }) {
     try {

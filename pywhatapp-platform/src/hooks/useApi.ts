@@ -355,13 +355,17 @@ export const useWhatsAppWeb = (userId: string | null) => {
         userId
       })
       
-      if (response.success) {
-        setQrCode(response.qrCode)
-        toast.success('QR kod oluşturuldu')
+      // Handle both wrapped and direct responses
+      const data = response.data || response
+      if (data && data.qr_code) {
+        setQrCode(data.qr_code)
+        toast.success(data.message || 'QR kod oluşturuldu')
+      } else {
+        throw new Error('QR kod oluşturulamadı')
       }
     } catch (error: any) {
       console.error('Error generating QR:', error)
-      toast.error('QR kod oluşturulamadı')
+      toast.error('QR kod oluşturulamadı: ' + (error.message || 'Bilinmeyen hata'))
     } finally {
       setConnecting(false)
     }
@@ -370,40 +374,55 @@ export const useWhatsAppWeb = (userId: string | null) => {
   const connect = async () => {
     if (!userId) return
     
+    setConnecting(true)
     try {
-      const response = await ApiService.callWhatsAppWebConnect({
-        action: 'connect',
-        userId
-      })
+      // First check current status
+      await checkStatus()
       
-      if (response.success) {
-        setConnected(true)
-        setQrCode(null)
-        toast.success('WhatsApp Web bağlantısı kuruldu')
+      // If already connected, no need to connect again
+      if (connected) {
+        toast.success('WhatsApp Web zaten bağlı')
+        return
       }
+      
+      // Simulate connection by checking status again after a delay
+      setTimeout(async () => {
+        await checkStatus()
+        if (!connected) {
+          toast.success('Henüz bağlanmadı. QR kodu taradığınızdan emin olun.')
+        }
+      }, 2000)
+      
     } catch (error: any) {
       console.error('Error connecting:', error)
-      toast.error('Bağlantı kurulamadı')
+      toast.error('Bağlantı kontrol edilemedi')
+    } finally {
+      setConnecting(false)
     }
   }
 
   const disconnect = async () => {
     if (!userId) return
     
+    setConnecting(true)
     try {
       const response = await ApiService.callWhatsAppWebConnect({
         action: 'disconnect',
         userId
       })
       
-      if (response.success) {
+      // Handle both wrapped and direct responses
+      const data = response.data || response
+      if (data) {
         setConnected(false)
         setQrCode(null)
-        toast.success('WhatsApp Web bağlantısı kesildi')
+        toast.success(data.message || 'WhatsApp Web bağlantısı kesildi')
       }
     } catch (error: any) {
       console.error('Error disconnecting:', error)
-      toast.error('Bağlantı kesilemedi')
+      toast.error('Bağlantı kesilemedi: ' + (error.message || 'Bilinmeyen hata'))
+    } finally {
+      setConnecting(false)
     }
   }
 
@@ -412,22 +431,36 @@ export const useWhatsAppWeb = (userId: string | null) => {
     
     try {
       const response = await ApiService.callWhatsAppWebConnect({
-        action: 'status',
+        action: 'check_connection',
         userId
       })
       
-      if (response.success) {
-        setConnected(response.status === 'connected')
-        setQrCode(response.qrCode)
+      // Handle both wrapped and direct responses
+      const data = response.data || response
+      if (data) {
+        setConnected(data.is_connected || false)
+        setQrCode(data.qr_code || null)
       }
     } catch (error: any) {
       console.error('Error checking status:', error)
+      // Don't show error toast for status checks as they run automatically
     }
   }
 
   useEffect(() => {
-    checkStatus()
-  }, [userId])
+    if (userId) {
+      checkStatus()
+      
+      // Check status every 10 seconds if not connected
+      const interval = setInterval(() => {
+        if (!connected) {
+          checkStatus()
+        }
+      }, 10000)
+      
+      return () => clearInterval(interval)
+    }
+  }, [userId, connected])
 
   return {
     connected,
