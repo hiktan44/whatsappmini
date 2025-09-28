@@ -10,15 +10,22 @@
       },
       "2": {
         "id": "2",
-        "content": "React uygulaması geliştirme (Vercel için optimize)",
-        "details": "**ACİL DÜZELTME GEREKİYOR:**\n- WhatsApp Web QR kod edge function tamamen bozuk (500 error)\n- Edge function'ları yeniden implement et\n- QR kod generation sistemini düzelt\n- Frontend-backend entegrasyonunu onar\n- WhatsApp Web bağlantısını test et\n\n**MEVCUT ÇALIŞAN ÖZELLİKLER:**\n- Authentication sistemi ✅\n- Kişi yönetimi ✅ \n- Şablon sistemi ✅\n- Medya upload ✅\n- Responsive tasarım ✅",
-        "status": "pending",
+        "content": "CRITICAL AUTH BUG FIX - Firebase Authentication Hatası",
+        "details": "**YENİ TESPIT EDİLEN HATA:**\n- Google Firebase 403 Forbidden hatası\n- API Key: AIzaSyDism1LSx7V8D4wq9g6iktRZCfKJGS7wfs (unauthorized)\n- React app'de yanlış Firebase configuration\n\n**ACİL DÜZELTMELER:**\n- Environment variables'ları doğru Supabase projesi ile update et\n- Firebase auth configuration'ını tamamen Supabase Auth ile değiştir\n- React app'deki auth provider'ını düzelt\n- Vercel deployment'ı yeni config ile redeploy et",
+        "status": "in_progress",
         "priority": "high"
       },
       "3": {
         "id": "3",
-        "content": "Vercel deployment rehberi hazırlama",
-        "details": "- Vercel'e deployment için detaylı adım adım rehber\n- Environment variables ayarlama talimatları\n- Supabase entegrasyonu için gerekli ayarlar\n- Troubleshooting kılavuzu",
+        "content": "WhatsApp Web QR kod sistemi onarımı",
+        "details": "**MEVCUT PROBLEM:**\n- Edge Functions 500 error veriyor\n- QR kod generation çalışmıyor\n- /functions/v1/whatsapp-web-connect endpoint bozuk\n\n**ÇÖZÜM ADAMLARI:**\n- Edge function'ları yeniden implement et\n- QR kod generation sistemini düzelt\n- WhatsApp Web bağlantısını test et",
+        "status": "pending",
+        "priority": "high"
+      },
+      "4": {
+        "id": "4",
+        "content": "Vercel deployment finalizasyonu",
+        "details": "- Tüm bug fix'ler sonrası final deployment\n- Environment variables doğrulama\n- Tüm feature'ların çalışır duruma getirilmesi\n- User acceptance testing",
         "status": "pending",
         "priority": "medium"
       }
