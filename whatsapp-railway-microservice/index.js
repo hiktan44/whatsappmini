@@ -96,8 +96,16 @@ app.post('/initialize-session', extractUserId, async (req, res) => {
           '--no-first-run',
           '--no-zygote',
           '--single-process',
-          '--disable-gpu'
-        ]
+          '--disable-gpu',
+          '--disable-background-timer-throttling',
+          '--disable-backgrounding-occluded-windows',
+          '--disable-renderer-backgrounding',
+          '--disable-features=TranslateUI',
+          '--disable-ipc-flooding-protection',
+          '--memory-pressure-off',
+          '--max_old_space_size=4096'
+        ],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
       }
     });
     

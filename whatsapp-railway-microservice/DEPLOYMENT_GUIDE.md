@@ -36,7 +36,19 @@ Railway project dashboard'da:
 NODE_ENV=production
 PORT=3000
 ALLOWED_ORIGINS=https://wln7xwqrttk2.space.minimax.io,https://xvxiwcbiqiqzfqisrvib.supabase.co
+
+# Puppeteer & Chrome Configuration
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=false
+PUPPETEER_ARGS=--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage
+
+# Memory Management
+NODE_OPTIONS=--max-old-space-size=4096
 ```
+
+### 3.1. Docker Build Configuration
+Proje Docker tabanlı deployment kullanır. Railway otomatik olarak `Dockerfile`'ı tespit edecek ve build edecektir.
+
+**Not**: Bu mikroservis WhatsApp Web için Puppeteer ve Chrome browser gerektirir. Docker image'ımız tüm gerekli dependencies'ları içerir.
 
 ### 4. Deployment URL Alma
 Deployment tamamlandığında:
